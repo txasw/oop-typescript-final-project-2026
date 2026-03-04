@@ -3,8 +3,11 @@ import { Book } from "./interfaces/book.interface";
 import { CreateBookDto } from "./dto/create-book.dto";
 import { UpdateBookDto } from "./dto/update-book.dto";
 import { PatchBookDto } from "./dto/patch-book.dto";
+import { FilterBookDto } from "./dto/filter-book.dto";
 import { BookStatus } from "../../common/enums/book-status.enum";
 import { generateId } from "../../common/utils/generate-id.util";
+import { PaginationDto } from "../../common/dto/pagination.dto";
+import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
 
 /**
  * BooksService — จัดการข้อมูลหนังสือแบบ in-memory
@@ -14,10 +17,54 @@ export class BooksService {
   private books: Book[] = [];
 
   /**
-   * ดึงรายการหนังสือทั้งหมด
+   * ดึงรายการหนังสือทั้งหมด พร้อม search, filter, pagination
    */
-  findAll(): Book[] {
-    return this.books;
+  findAll(
+    paginationDto: PaginationDto,
+    filterDto: FilterBookDto,
+  ): PaginatedResponse<Book> {
+    let filtered = [...this.books];
+
+    // Filter by category
+    if (filterDto.category) {
+      filtered = filtered.filter((b) => b.category === filterDto.category);
+    }
+
+    // Filter by status
+    if (filterDto.status) {
+      filtered = filtered.filter((b) => b.status === filterDto.status);
+    }
+
+    // Search across string fields
+    if (paginationDto.search) {
+      const keyword = paginationDto.search.toLowerCase();
+      filtered = filtered.filter(
+        (b) =>
+          b.title.toLowerCase().includes(keyword) ||
+          b.author.toLowerCase().includes(keyword) ||
+          b.isbn.toLowerCase().includes(keyword) ||
+          b.publisher.toLowerCase().includes(keyword) ||
+          b.description.toLowerCase().includes(keyword),
+      );
+    }
+
+    // Pagination
+    const page = paginationDto.page ?? 1;
+    const limit = paginationDto.limit ?? 10;
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / limit);
+    const start = (page - 1) * limit;
+    const items = filtered.slice(start, start + limit);
+
+    return {
+      items,
+      meta: {
+        currentPage: page,
+        itemsPerPage: limit,
+        totalItems,
+        totalPages,
+      },
+    };
   }
 
   /**
