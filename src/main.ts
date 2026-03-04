@@ -3,6 +3,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { HttpExceptionFilter } from "./common/filters/http-exception.filter";
+import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,9 @@ async function bootstrap(): Promise<void> {
 
   // Global exception filter — ทำให้ error response เป็น format เดียวกันทั้งระบบ
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // Global request logging interceptor
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   // Global validation pipe
   app.useGlobalPipes(
