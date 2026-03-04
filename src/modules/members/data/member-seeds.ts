@@ -1,0 +1,47 @@
+import { Member } from "../interfaces/member.interface";
+import { MemberStatus } from "../../../common/enums/member-status.enum";
+
+export const memberSeeds: Member[] = [
+  {
+    id: "m1b9b9b9-1111-4b9e-8b9e-1f9e9e9e9e9e",
+    memberCode: "LIB-0001",
+    firstName: "Somchai",
+    lastName: "Jaidee",
+    email: "somchai.j@example.com",
+    phone: "081-111-1111",
+    address: "123 Sukhumvit Road, Bangkok 10110",
+    status: MemberStatus.ACTIVE,
+    maxBooksAllowed: 5,
+    borrowedBookIds: [],
+    registeredAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "m2b9b9b9-2222-4b9e-8b9e-1f9e9e9e9e9e",
+    memberCode: "LIB-0002",
+    firstName: "Somsri",
+    lastName: "Rukrian",
+    email: "somsri.r@example.com",
+    phone: "082-222-2222",
+    address: "456 Phahonyothin Road, Bangkok 10400",
+    status: MemberStatus.ACTIVE,
+    maxBooksAllowed: 5,
+    borrowedBookIds: [],
+    registeredAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "m3b9b9b9-3333-4b9e-8b9e-1f9e9e9e9e9e",
+    memberCode: "LIB-0003",
+    firstName: "Somsak",
+    lastName: "Khayan",
+    email: "somsak.k@example.com",
+    phone: "083-333-3333",
+    address: "789 Rama 9 Road, Bangkok 10310",
+    status: MemberStatus.INACTIVE,
+    maxBooksAllowed: 5,
+    borrowedBookIds: [],
+    registeredAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];

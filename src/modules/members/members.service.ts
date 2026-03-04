@@ -8,14 +8,15 @@ import { MemberStatus } from "../../common/enums/member-status.enum";
 import { generateId } from "../../common/utils/generate-id.util";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
+import { memberSeeds } from "./data/member-seeds";
 
 /**
  * MembersService — จัดการข้อมูลสมาชิกแบบ in-memory
  */
 @Injectable()
 export class MembersService {
-  private members: Member[] = [];
-  private memberCounter = 0;
+  private members: Member[] = [...memberSeeds];
+  private memberCounter = memberSeeds.length;
 
   /**
    * สร้างรหัสสมาชิกอัตโนมัติ (เช่น LIB-0001)
@@ -221,6 +222,29 @@ export class MembersService {
         (id) => id !== bookId,
       ),
       updatedAt: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * ดึงสถิติสมาชิก
+   */
+  getStats() {
+    const totalMembers = this.members.length;
+    const active = this.members.filter(
+      (m) => m.status === MemberStatus.ACTIVE,
+    ).length;
+    const inactive = this.members.filter(
+      (m) => m.status === MemberStatus.INACTIVE,
+    ).length;
+    const suspended = this.members.filter(
+      (m) => m.status === MemberStatus.SUSPENDED,
+    ).length;
+
+    return {
+      totalMembers,
+      active,
+      inactive,
+      suspended,
     };
   }
 }

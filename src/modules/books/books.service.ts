@@ -11,11 +11,13 @@ import { UpdateBookDto } from "./dto/update-book.dto";
 import { PatchBookDto } from "./dto/patch-book.dto";
 import { FilterBookDto } from "./dto/filter-book.dto";
 import { BookStatus } from "../../common/enums/book-status.enum";
+import { BookCategory } from "../../common/enums/book-category.enum";
 import { MemberStatus } from "../../common/enums/member-status.enum";
 import { generateId } from "../../common/utils/generate-id.util";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
 import { MembersService } from "../members/members.service";
+import { bookSeeds } from "./data/book-seeds";
 
 /**
  * BooksService — จัดการข้อมูลหนังสือแบบ in-memory
@@ -27,7 +29,7 @@ export class BooksService {
     private readonly membersService: MembersService,
   ) {}
 
-  private books: Book[] = [];
+  private books: Book[] = [...bookSeeds];
 
   /**
    * ดึงรายการหนังสือทั้งหมด พร้อม search, filter, pagination
@@ -281,5 +283,33 @@ export class BooksService {
     this.membersService.removeBorrowedBook(borrowerId, bookId);
 
     return this.books[bookIndex];
+  }
+
+  /**
+   * ดึงสถิติหนังสือ
+   */
+  getStats() {
+    const totalBooks = this.books.length;
+    const available = this.books.filter(
+      (b) => b.status === BookStatus.AVAILABLE,
+    ).length;
+    const borrowed = this.books.filter(
+      (b) => b.status === BookStatus.BORROWED,
+    ).length;
+
+    // Group by category
+    const byCategory: Record<string, number> = {};
+    Object.values(BookCategory).forEach((cat) => {
+      byCategory[cat as string] = this.books.filter(
+        (b) => b.category === cat,
+      ).length;
+    });
+
+    return {
+      totalBooks,
+      available,
+      borrowed,
+      byCategory,
+    };
   }
 }

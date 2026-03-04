@@ -82,6 +82,21 @@ export class BooksController {
   }
 
   /**
+   * GET /books/stats — ดึงสถิติหนังสือ
+   */
+  @Get("stats")
+  @ApiOperation({ summary: "ดึงสถิติหนังสือ" })
+  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  getStats(): ApiResponse<Record<string, unknown>> {
+    const stats = this.booksService.getStats();
+    return {
+      success: true,
+      message: "Book statistics retrieved successfully",
+      data: stats,
+    };
+  }
+
+  /**
    * GET /books/:id — ดึงหนังสือตาม ID
    */
   @Get(":id")
