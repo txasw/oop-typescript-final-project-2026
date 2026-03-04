@@ -30,8 +30,14 @@ interface ApiResponse<T> {
 
 ### GET /books
 
-ดึงรายการหนังสือทั้งหมด
+ดึงรายการหนังสือทั้งหมด (รองรับ ค้นหา, กรอง และ แบ่งหน้า)
 
+- **Query Parameters:**
+  - `page` (number, default: 1)
+  - `limit` (number, default: 10)
+  - `search` (string) — ค้นหาจาก title, author, หรือ isbn
+  - `category` (string) — กรองตามหมวดหมู่
+  - `status` (string) — กรองตามสถานะ
 - **Response:** `200 OK`
 
 ```json
@@ -66,6 +72,39 @@ interface ApiResponse<T> {
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
+
+---
+
+### GET /books/stats
+
+ดึงสถิติของข้อมูลหนังสือทั้งหมด (รวมจำนวนหนังสือทั้งหมด, ว่าง, ถูกยืม และแบ่งตามหมวดหมู่)
+
+- **Response:** `200 OK`
+
+---
+
+### POST /books/:id/borrow
+
+ยืมหนังสือ โดยระบุรหัสสมาชิกผู้ยืม
+
+- **Parameters:** `id` (UUID ของหนังสือ)
+- **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
+- **Body:**
+
+```json
+{
+  "memberId": "member-uuid"
+}
+```
+
+---
+
+### POST /books/:id/return
+
+คืนหนังสือที่ถูกยืม
+
+- **Parameters:** `id` (UUID ของหนังสือ)
+- **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
 
 ---
 
@@ -137,8 +176,13 @@ interface ApiResponse<T> {
 
 ### GET /members
 
-ดึงรายการสมาชิกทั้งหมด
+ดึงรายการสมาชิกทั้งหมด (รองรับ ค้นหา, กรอง และ แบ่งหน้า)
 
+- **Query Parameters:**
+  - `page` (number, default: 1)
+  - `limit` (number, default: 10)
+  - `search` (string) — ค้นหาจาก firstName, lastName, หรือ memberCode
+  - `status` (string) — กรองตามสถานะ
 - **Response:** `200 OK`
 
 ---
@@ -149,6 +193,14 @@ interface ApiResponse<T> {
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
+
+---
+
+### GET /members/stats
+
+ดึงสถิติข้อมูลสมาชิก (รวมจำนวนสมาชิกทั้งหมด, ใช้งานอยู่, ปิดใช้งาน, ระงับ)
+
+- **Response:** `200 OK`
 
 ---
 
@@ -229,3 +281,22 @@ interface ApiResponse<T> {
 | `400` | Bad Request — ข้อมูลไม่ถูกต้อง (Validation error) |
 | `404` | Not Found — ไม่พบข้อมูล                           |
 | `500` | Internal Server Error — ข้อผิดพลาดภายในระบบ       |
+
+---
+
+## Health Check API (`/health`)
+
+### GET /health
+
+ตรวจสอบสถานะการทำงานของระบบ
+
+- **Response:** `200 OK`
+
+```json
+{
+  "status": "ok",
+  "uptime": 120.5,
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "message": "Library Management System API is running smoothly."
+}
+```

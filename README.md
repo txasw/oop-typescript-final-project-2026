@@ -56,6 +56,26 @@ http://localhost:3000/api
 
 ---
 
+## ✨ Features
+
+### 📚 Core (Books & Members)
+
+- สร้าง, ดึงข้อมูล, อัปเดต (Full/Partial), ลบ หนังสือและสมาชิก
+- ค้นหา (Search), กรอง (Filter) และ แบ่งหน้า (Pagination)
+
+### 🔄 Borrowing System
+
+- ระบบยืม-คืนหนังสือ
+- เช็คเงื่อนไขก่อนยืม (ผู้ยืมต้องเป็น ACTIVE, จำนวนไม่เกินโควตา, หนังสือต้องว่าง)
+
+### 📊 Extra Features
+
+- `/books/stats` & `/members/stats` ดึงสถิติรวมของระบบ
+- In-memory seed data
+- `/health` endpoint และ Request Logging Interceptor
+
+---
+
 ## 📁 Project Structure
 
 ```text
