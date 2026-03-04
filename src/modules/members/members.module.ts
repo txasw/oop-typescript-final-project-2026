@@ -1,11 +1,13 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { MembersController } from "./members.controller";
 import { MembersService } from "./members.service";
+import { BooksModule } from "../books/books.module";
 
 /**
  * MembersModule — จัดการ dependency injection สำหรับ Member feature
  */
 @Module({
+  imports: [forwardRef(() => BooksModule)],
   controllers: [MembersController],
   providers: [MembersService],
   exports: [MembersService],
