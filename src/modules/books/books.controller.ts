@@ -23,6 +23,7 @@ import { CreateBookDto } from "./dto/create-book.dto";
 import { UpdateBookDto } from "./dto/update-book.dto";
 import { PatchBookDto } from "./dto/patch-book.dto";
 import { FilterBookDto } from "./dto/filter-book.dto";
+import { BorrowBookDto } from "./dto/borrow-book.dto";
 import { ApiResponse } from "../../common/interfaces/api-response.interface";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
@@ -169,6 +170,47 @@ export class BooksController {
     return {
       success: true,
       message: "Book deleted successfully",
+      data: book,
+    };
+  }
+
+  /**
+   * POST /books/:id/borrow — ยืมหนังสือ
+   */
+  @Post(":id/borrow")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "ยืมหนังสือ" })
+  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
+  @SwaggerResponse({ status: 200, description: "ยืมหนังสือสำเร็จ" })
+  @SwaggerResponse({ status: 400, description: "หนังสือไม่พร้อมให้ยืม" })
+  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือหรือสมาชิก" })
+  borrow(
+    @Param("id") id: string,
+    @Body() borrowBookDto: BorrowBookDto,
+  ): ApiResponse<Book> {
+    const book = this.booksService.borrow(id, borrowBookDto.memberId);
+    return {
+      success: true,
+      message: "Book borrowed successfully",
+      data: book,
+    };
+  }
+
+  /**
+   * POST /books/:id/return — คืนหนังสือ
+   */
+  @Post(":id/return")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "คืนหนังสือ" })
+  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
+  @SwaggerResponse({ status: 200, description: "คืนหนังสือสำเร็จ" })
+  @SwaggerResponse({ status: 400, description: "หนังสือไม่ได้ถูกยืม" })
+  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  returnBook(@Param("id") id: string): ApiResponse<Book> {
+    const book = this.booksService.returnBook(id);
+    return {
+      success: true,
+      message: "Book returned successfully",
       data: book,
     };
   }

@@ -191,4 +191,36 @@ export class MembersService {
     this.members.splice(memberIndex, 1);
     return deletedMember;
   }
+
+  /**
+   * เพิ่ม bookId ในรายการหนังสือที่ยืม (เรียกจาก BooksService)
+   */
+  addBorrowedBook(memberId: string, bookId: string): void {
+    const memberIndex = this.members.findIndex((m) => m.id === memberId);
+    if (memberIndex === -1) {
+      throw new NotFoundException(`Member with ID "${memberId}" not found`);
+    }
+    this.members[memberIndex] = {
+      ...this.members[memberIndex],
+      borrowedBookIds: [...this.members[memberIndex].borrowedBookIds, bookId],
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * ลบ bookId ออกจากรายการหนังสือที่ยืม (เรียกจาก BooksService)
+   */
+  removeBorrowedBook(memberId: string, bookId: string): void {
+    const memberIndex = this.members.findIndex((m) => m.id === memberId);
+    if (memberIndex === -1) {
+      throw new NotFoundException(`Member with ID "${memberId}" not found`);
+    }
+    this.members[memberIndex] = {
+      ...this.members[memberIndex],
+      borrowedBookIds: this.members[memberIndex].borrowedBookIds.filter(
+        (id) => id !== bookId,
+      ),
+      updatedAt: new Date().toISOString(),
+    };
+  }
 }
