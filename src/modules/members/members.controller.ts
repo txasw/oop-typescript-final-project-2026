@@ -76,6 +76,21 @@ export class MembersController {
   }
 
   /**
+   * GET /members/stats — ดึงสถิติสมาชิก
+   */
+  @Get("stats")
+  @ApiOperation({ summary: "ดึงสถิติสมาชิก" })
+  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  getStats(): ApiResponse<Record<string, unknown>> {
+    const stats = this.membersService.getStats();
+    return {
+      success: true,
+      message: "Member statistics retrieved successfully",
+      data: stats,
+    };
+  }
+
+  /**
    * GET /members/:id — ดึงสมาชิกตาม ID
    */
   @Get(":id")
