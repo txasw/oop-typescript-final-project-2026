@@ -1,5 +1,5 @@
-import { BookStatus } from "../../common/enums/book-status.enum";
-import { BookCategory } from "../../common/enums/book-category.enum";
+import { BookStatus } from "../../../common/enums/book-status.enum";
+import { BookCategory } from "../../../common/enums/book-category.enum";
 
 /**
  * Book Interface — โครงสร้างข้อมูลหนังสือในระบบห้องสมุด
