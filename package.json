@@ -9,22 +9,26 @@
     {
       "fullname": "นายธนะสิทธิ์ อัศวสกุลวงศ์",
       "username": "txasw",
-      "studentId": "68010488"
+      "studentId": "68010488",
+      "email": "txasw@outlook.co.th"
     },
     {
       "fullname": "นางสาวชาลิสา เทพยาน",
       "username": "68010244-cloud",
-      "studentId": "68010244"
+      "studentId": "68010244",
+      "email": "68010244@kmitl.ac.th"
     },
     {
       "fullname": "นางสาวทอแสงรัศมี ทัสสะ",
       "username": "izcazy",
-      "studentId": "68010409"
+      "studentId": "68010409",
+      "email": "ice.izcazy@gmail.com"
     },
     {
       "fullname": "นายชัยมงคล ถืออยู่",
       "username": "68010238",
-      "studentId": "68010238"
+      "studentId": "68010238",
+      "email": "68010238@kmitl.ac.th"
     }
   ],
   "project": {
