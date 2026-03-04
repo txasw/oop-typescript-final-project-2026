@@ -3,8 +3,11 @@ import { Member } from "./interfaces/member.interface";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
 import { PatchMemberDto } from "./dto/patch-member.dto";
+import { FilterMemberDto } from "./dto/filter-member.dto";
 import { MemberStatus } from "../../common/enums/member-status.enum";
 import { generateId } from "../../common/utils/generate-id.util";
+import { PaginationDto } from "../../common/dto/pagination.dto";
+import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
 
 /**
  * MembersService — จัดการข้อมูลสมาชิกแบบ in-memory
@@ -23,10 +26,49 @@ export class MembersService {
   }
 
   /**
-   * ดึงรายการสมาชิกทั้งหมด
+   * ดึงรายการสมาชิกทั้งหมด พร้อม search, filter, pagination
    */
-  findAll(): Member[] {
-    return this.members;
+  findAll(
+    paginationDto: PaginationDto,
+    filterDto: FilterMemberDto,
+  ): PaginatedResponse<Member> {
+    let filtered = [...this.members];
+
+    // Filter by status
+    if (filterDto.status) {
+      filtered = filtered.filter((m) => m.status === filterDto.status);
+    }
+
+    // Search across string fields
+    if (paginationDto.search) {
+      const keyword = paginationDto.search.toLowerCase();
+      filtered = filtered.filter(
+        (m) =>
+          m.firstName.toLowerCase().includes(keyword) ||
+          m.lastName.toLowerCase().includes(keyword) ||
+          m.email.toLowerCase().includes(keyword) ||
+          m.memberCode.toLowerCase().includes(keyword) ||
+          m.phone.toLowerCase().includes(keyword),
+      );
+    }
+
+    // Pagination
+    const page = paginationDto.page ?? 1;
+    const limit = paginationDto.limit ?? 10;
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / limit);
+    const start = (page - 1) * limit;
+    const items = filtered.slice(start, start + limit);
+
+    return {
+      items,
+      meta: {
+        currentPage: page,
+        itemsPerPage: limit,
+        totalItems,
+        totalPages,
+      },
+    };
   }
 
   /**
