@@ -1,19 +1,32 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+  forwardRef,
+} from "@nestjs/common";
 import { Book } from "./interfaces/book.interface";
 import { CreateBookDto } from "./dto/create-book.dto";
 import { UpdateBookDto } from "./dto/update-book.dto";
 import { PatchBookDto } from "./dto/patch-book.dto";
 import { FilterBookDto } from "./dto/filter-book.dto";
 import { BookStatus } from "../../common/enums/book-status.enum";
+import { MemberStatus } from "../../common/enums/member-status.enum";
 import { generateId } from "../../common/utils/generate-id.util";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
+import { MembersService } from "../members/members.service";
 
 /**
  * BooksService — จัดการข้อมูลหนังสือแบบ in-memory
  */
 @Injectable()
 export class BooksService {
+  constructor(
+    @Inject(forwardRef(() => MembersService))
+    private readonly membersService: MembersService,
+  ) {}
+
   private books: Book[] = [];
 
   /**
@@ -186,5 +199,87 @@ export class BooksService {
     const deletedBook = this.books[bookIndex];
     this.books.splice(bookIndex, 1);
     return deletedBook;
+  }
+
+  /**
+   * ยืมหนังสือ
+   * @throws NotFoundException ถ้าไม่พบหนังสือหรือสมาชิก
+   * @throws BadRequestException ถ้าหนังสือไม่พร้อมให้ยืมหรือสมาชิกยืมเต็มโคต้า
+   */
+  borrow(bookId: string, memberId: string): Book {
+    const book = this.findOne(bookId);
+    const member = this.membersService.findOne(memberId);
+
+    // Validate book availability
+    if (book.status === BookStatus.BORROWED) {
+      throw new BadRequestException(`Book "${book.title}" is already borrowed`);
+    }
+    if (!book.isAvailableForLoan) {
+      throw new BadRequestException(
+        `Book "${book.title}" is not available for loan`,
+      );
+    }
+    if (book.status === BookStatus.MAINTENANCE) {
+      throw new BadRequestException(
+        `Book "${book.title}" is under maintenance`,
+      );
+    }
+
+    // Validate member
+    if (member.status !== MemberStatus.ACTIVE) {
+      throw new BadRequestException(
+        `Member "${member.firstName} ${member.lastName}" is not active (status: ${member.status})`,
+      );
+    }
+    if (member.borrowedBookIds.length >= member.maxBooksAllowed) {
+      throw new BadRequestException(
+        `Member has reached the maximum borrowing limit (${member.maxBooksAllowed} books)`,
+      );
+    }
+
+    // Update book status
+    const bookIndex = this.books.findIndex((b) => b.id === bookId);
+    this.books[bookIndex] = {
+      ...book,
+      status: BookStatus.BORROWED,
+      currentBorrowerId: memberId,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Update member's borrowed list
+    this.membersService.addBorrowedBook(memberId, bookId);
+
+    return this.books[bookIndex];
+  }
+
+  /**
+   * คืนหนังสือ
+   * @throws NotFoundException ถ้าไม่พบหนังสือ
+   * @throws BadRequestException ถ้าหนังสือไม่ได้ถูกยืม
+   */
+  returnBook(bookId: string): Book {
+    const book = this.findOne(bookId);
+
+    if (book.status !== BookStatus.BORROWED || !book.currentBorrowerId) {
+      throw new BadRequestException(
+        `Book "${book.title}" is not currently borrowed`,
+      );
+    }
+
+    const borrowerId = book.currentBorrowerId;
+
+    // Update book status
+    const bookIndex = this.books.findIndex((b) => b.id === bookId);
+    this.books[bookIndex] = {
+      ...book,
+      status: BookStatus.AVAILABLE,
+      currentBorrowerId: null,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Remove from member's borrowed list
+    this.membersService.removeBorrowedBook(borrowerId, bookId);
+
+    return this.books[bookIndex];
   }
 }
