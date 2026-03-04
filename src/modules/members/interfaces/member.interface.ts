@@ -1,4 +1,4 @@
-import { MemberStatus } from "../../common/enums/member-status.enum";
+import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
  * Member Interface — โครงสร้างข้อมูลสมาชิกห้องสมุด
