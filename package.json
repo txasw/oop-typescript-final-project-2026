@@ -7,9 +7,24 @@
   "license": "MIT",
   "contributors": [
     {
-      "fullname": "John Doe",
-      "username": "username1",
-      "studentId": "12345678"
+      "fullname": "นายธนะสิทธิ์ อัศวสกุลวงศ์",
+      "username": "txasw",
+      "studentId": "68010488"
+    },
+    {
+      "fullname": "นางสาวชาลิสา เทพยาน",
+      "username": "68010244-cloud",
+      "studentId": "68010244"
+    },
+    {
+      "fullname": "นางสาวทอแสงรัศมี ทัสสะ",
+      "username": "izcazy",
+      "studentId": "68010409"
+    },
+    {
+      "fullname": "นายชัยมงคล ถืออยู่",
+      "username": "68010238",
+      "studentId": "68010238"
     }
   ],
   "project": {
