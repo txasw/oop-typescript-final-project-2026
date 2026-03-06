@@ -743,9 +743,10 @@ function makeDraggable(element, handle) {
       // Apply new left position. Ensure it doesn't go off-screen easily.
       let newLeft = startLeft + deltaX;
 
-      // Optional: keep within viewport bounds
-      const maxLeft = window.innerWidth - element.offsetWidth;
-      newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+      // Optional: keep within viewport bounds with 24px padding
+      const padding = 24;
+      const maxLeft = window.innerWidth - element.offsetWidth - padding;
+      newLeft = Math.max(padding, Math.min(newLeft, maxLeft));
 
       element.style.left = `${newLeft}px`;
       element.style.right = "auto"; // Override CSS right calc if any
