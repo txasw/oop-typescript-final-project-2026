@@ -599,8 +599,8 @@ i[data-lucide] {
 /* Floating API Terminal (Vercel Style) */
 .api-terminal.floating {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  top: calc(100vh - 374px); /* 350 height + 24 bottom margin */
+  left: calc(100vw - 524px); /* 500 width + 24 right margin */
   width: 500px;
   height: 350px;
   background: #000;
@@ -621,14 +621,13 @@ i[data-lucide] {
   width: calc(100vw - 32px) !important;
   height: calc(100vh - 32px) !important;
   left: 16px !important;
-  bottom: 16px !important;
-  right: auto !important;
+  top: 16px !important;
   transform: none;
   border-radius: 12px;
 }
 
 .api-terminal.minimized {
-  transform: translateY(calc(100% - 40px)); /* Keep header visible */
+  transform: translateY(310px); /* Keep header visible (350 - 40) */
   opacity: 0.8;
 }
 

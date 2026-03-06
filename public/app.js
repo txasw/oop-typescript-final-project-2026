@@ -702,6 +702,15 @@ function makeDraggable(element, handle) {
   const target = handle || element;
   target.onmousedown = dragMouseDown;
 
+  // Safe click handler attached directly to the handle
+  target.onclick = function (e) {
+    if (e.target.closest("button")) return;
+    if (!hasDragged) {
+      element.classList.toggle("minimized");
+      element.classList.remove("fullscreen");
+    }
+  };
+
   function dragMouseDown(e) {
     if (e.target.closest("button")) return;
 
@@ -722,24 +731,11 @@ function makeDraggable(element, handle) {
     pos3 = e.clientX;
 
     element.style.left = element.offsetLeft - pos1 + "px";
-    element.style.right = "auto";
   }
 
   function closeDragElement(e) {
     document.onmouseup = null;
     document.onmousemove = null;
     element.classList.remove("dragging");
-
-    // Toggle minimize if it was just a click
-    if (
-      !hasDragged &&
-      e &&
-      e.target &&
-      e.target.closest(".terminal-header") &&
-      !e.target.closest("button")
-    ) {
-      element.classList.toggle("minimized");
-      element.classList.remove("fullscreen");
-    }
   }
 }
