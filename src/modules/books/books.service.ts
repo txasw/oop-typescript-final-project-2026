@@ -114,6 +114,7 @@ export class BooksService {
       status: createBookDto.status ?? BookStatus.AVAILABLE,
       isAvailableForLoan: createBookDto.isAvailableForLoan ?? true,
       currentBorrowerId: null,
+      reservedBy: [],
       borrowedAt: null,
       dueDate: null,
       deletedAt: null,
@@ -147,6 +148,7 @@ export class BooksService {
       status: updateBookDto.status,
       isAvailableForLoan: updateBookDto.isAvailableForLoan,
       currentBorrowerId: existingBook.currentBorrowerId,
+      reservedBy: existingBook.reservedBy,
       borrowedAt: existingBook.borrowedAt,
       dueDate: existingBook.dueDate,
       deletedAt: existingBook.deletedAt,
@@ -315,16 +317,32 @@ export class BooksService {
       }
     }
 
-    // Update book status
+    // Update book status — auto-assign to first in reservation queue if any
     const bookIndex = this.books.findIndex((b) => b.id === bookId);
-    this.books[bookIndex] = {
-      ...book,
-      status: BookStatus.AVAILABLE,
-      currentBorrowerId: null,
-      borrowedAt: null,
-      dueDate: null,
-      updatedAt: new Date().toISOString(),
-    };
+    if (book.reservedBy.length > 0) {
+      const nextMemberId = book.reservedBy[0];
+      const now = new Date();
+      const newDueDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      this.books[bookIndex] = {
+        ...book,
+        status: BookStatus.RESERVED,
+        currentBorrowerId: nextMemberId,
+        reservedBy: book.reservedBy.slice(1),
+        borrowedAt: now.toISOString(),
+        dueDate: newDueDate.toISOString(),
+        updatedAt: now.toISOString(),
+      };
+      this.membersService.addBorrowedBook(nextMemberId, bookId);
+    } else {
+      this.books[bookIndex] = {
+        ...book,
+        status: BookStatus.AVAILABLE,
+        currentBorrowerId: null,
+        borrowedAt: null,
+        dueDate: null,
+        updatedAt: new Date().toISOString(),
+      };
+    }
 
     // Remove from member's borrowed list
     this.membersService.removeBorrowedBook(borrowerId, bookId);
@@ -344,6 +362,51 @@ export class BooksService {
     });
 
     return { book: this.books[bookIndex], fine, overdueDays };
+  }
+
+  /**
+   * จองหนังสือที่ถูกยืมอยู่ — เพิ่มสมาชิกเข้าคิวรอ
+   * @throws NotFoundException ถ้าไม่พบหนังสือหรือสมาชิก
+   * @throws BadRequestException ถ้าหนังสือไม่ได้ถูกยืม หรือสมาชิกจองอยู่แล้ว
+   */
+  reserve(bookId: string, memberId: string): Book {
+    const book = this.findOne(bookId);
+    const member = this.membersService.findOne(memberId);
+
+    if (
+      book.status !== BookStatus.BORROWED &&
+      book.status !== BookStatus.RESERVED
+    ) {
+      throw new BadRequestException(
+        `Book "${book.title}" is currently available — no need to reserve, borrow it directly.`,
+      );
+    }
+
+    if (book.currentBorrowerId === memberId) {
+      throw new BadRequestException(
+        `Member "${member.firstName} ${member.lastName}" is already borrowing this book.`,
+      );
+    }
+
+    if (book.reservedBy.includes(memberId)) {
+      throw new BadRequestException(
+        `Member "${member.firstName} ${member.lastName}" has already reserved this book.`,
+      );
+    }
+
+    if (member.status !== MemberStatus.ACTIVE) {
+      throw new BadRequestException(
+        `Member "${member.firstName} ${member.lastName}" is not active (status: ${member.status}).`,
+      );
+    }
+
+    const bookIndex = this.books.findIndex((b) => b.id === bookId);
+    this.books[bookIndex] = {
+      ...book,
+      reservedBy: [...book.reservedBy, memberId],
+      updatedAt: new Date().toISOString(),
+    };
+    return this.books[bookIndex];
   }
 
   /**

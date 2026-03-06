@@ -233,4 +233,27 @@ export class BooksController {
       data: result,
     };
   }
+
+  /**
+   * POST /books/:id/reserve — จองหนังสือเข้าคิวรอ
+   */
+  @Post(":id/reserve")
+  @ApiOperation({
+    summary: "จองหนังสือเข้าคิวรอ (ต้องเป็นหนังสือที่ถูกยืมอยู่)",
+  })
+  @ApiParam({ name: "id", description: "Book ID" })
+  @SwaggerResponse({ status: 200, description: "จองสำเร็จ" })
+  @SwaggerResponse({ status: 400, description: "ไม่สามารถจองได้" })
+  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  reserve(
+    @Param("id") id: string,
+    @Body() borrowBookDto: BorrowBookDto,
+  ): ApiResponse<Book> {
+    const book = this.booksService.reserve(id, borrowBookDto.memberId);
+    return {
+      success: true,
+      message: `Book reserved successfully. Position in queue: ${book.reservedBy.length + 1}`,
+      data: book,
+    };
+  }
 }
