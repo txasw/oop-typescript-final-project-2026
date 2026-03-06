@@ -16,15 +16,13 @@ import {
   ApiOperation,
   ApiResponse as SwaggerResponse,
   ApiParam,
-  ApiQuery,
 } from "@nestjs/swagger";
 import { MembersService } from "./members.service";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
 import { PatchMemberDto } from "./dto/patch-member.dto";
-import { FilterMemberDto } from "./dto/filter-member.dto";
+import { QueryMemberDto } from "./dto/query-member.dto";
 import { ApiResponse } from "../../common/interfaces/api-response.interface";
-import { PaginationDto } from "../../common/dto/pagination.dto";
 import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
 import { Member } from "./interfaces/member.interface";
 
@@ -43,31 +41,11 @@ export class MembersController {
   @ApiOperation({
     summary: "ดึงรายการสมาชิกทั้งหมด (รองรับ search, filter, pagination)",
   })
-  @ApiQuery({
-    name: "page",
-    required: false,
-    type: Number,
-    description: "หมายเลขหน้า",
-  })
-  @ApiQuery({
-    name: "limit",
-    required: false,
-    type: Number,
-    description: "จำนวนรายการต่อหน้า",
-  })
-  @ApiQuery({
-    name: "search",
-    required: false,
-    type: String,
-    description: "คำค้นหา",
-  })
-  @ApiQuery({ name: "status", required: false, description: "กรองตามสถานะ" })
   @SwaggerResponse({ status: 200, description: "สำเร็จ" })
   findAll(
-    @Query() paginationDto: PaginationDto,
-    @Query() filterDto: FilterMemberDto,
+    @Query() queryDto: QueryMemberDto,
   ): ApiResponse<PaginatedResponse<Member>> {
-    const result = this.membersService.findAll(paginationDto, filterDto);
+    const result = this.membersService.findAll(queryDto, queryDto);
     return {
       success: true,
       message: "Members retrieved successfully",
