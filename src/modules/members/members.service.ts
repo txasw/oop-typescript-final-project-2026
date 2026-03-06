@@ -233,14 +233,15 @@ export class MembersService {
    * ดึงสถิติสมาชิก
    */
   getStats() {
-    const totalMembers = this.members.length;
-    const active = this.members.filter(
+    const activeMembersList = this.members.filter((m) => !m.deletedAt);
+    const totalMembers = activeMembersList.length;
+    const active = activeMembersList.filter(
       (m) => m.status === MemberStatus.ACTIVE,
     ).length;
-    const inactive = this.members.filter(
+    const inactive = activeMembersList.filter(
       (m) => m.status === MemberStatus.INACTIVE,
     ).length;
-    const suspended = this.members.filter(
+    const suspended = activeMembersList.filter(
       (m) => m.status === MemberStatus.SUSPENDED,
     ).length;
 

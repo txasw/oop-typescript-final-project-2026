@@ -413,18 +413,19 @@ export class BooksService {
    * ดึงสถิติหนังสือ
    */
   getStats() {
-    const totalBooks = this.books.length;
-    const available = this.books.filter(
+    const activeBooks = this.books.filter((b) => !b.deletedAt);
+    const totalBooks = activeBooks.length;
+    const available = activeBooks.filter(
       (b) => b.status === BookStatus.AVAILABLE,
     ).length;
-    const borrowed = this.books.filter(
+    const borrowed = activeBooks.filter(
       (b) => b.status === BookStatus.BORROWED,
     ).length;
 
     // Group by category
     const byCategory: Record<string, number> = {};
     Object.values(BookCategory).forEach((cat) => {
-      byCategory[cat as string] = this.books.filter(
+      byCategory[cat as string] = activeBooks.filter(
         (b) => b.category === cat,
       ).length;
     });
