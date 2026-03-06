@@ -610,16 +610,25 @@ i[data-lucide] {
   flex-direction: column;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
   z-index: 1000;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Specifically exclude 'left' and 'top' from default transition to allow instant JS dragging */
+  transition:
+    width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .api-terminal.dragging {
+  /* Enforce no transitions during drag */
   transition: none !important;
 }
 
 .api-terminal.fullscreen {
   width: calc(100vw - 32px) !important;
   height: calc(100vh - 32px) !important;
+  /* Add explicit transition for top/left only when going fullscreen */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   left: 16px !important;
   top: 16px !important;
   transform: none;

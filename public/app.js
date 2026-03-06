@@ -693,49 +693,79 @@ function showToast(message, type = "info") {
   }, 5000);
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  // === Floating Terminal Init ===
+  const apiTerminal = document.getElementById("apiTerminal");
+  const apiTerminalHeader = document.getElementById("apiTerminalHeader");
+  if (apiTerminal && apiTerminalHeader) {
+    makeDraggable(apiTerminal, apiTerminalHeader);
+  }
+});
+
 // === Floating Terminal Draggable Logic ===
 function makeDraggable(element, handle) {
-  let pos1 = 0,
-    pos3 = 0;
-  let hasDragged = false;
+  let isDragging = false;
+  let startX = 0;
+  let startLeft = 0;
+  let hasMoved = false;
 
   const target = handle || element;
-  target.onmousedown = dragMouseDown;
 
-  // Safe click handler attached directly to the handle
-  target.onclick = function (e) {
+  target.addEventListener("pointerdown", (e) => {
+    // Ignore clicks on buttons inside the header
     if (e.target.closest("button")) return;
-    if (!hasDragged) {
+
+    isDragging = true;
+    hasMoved = false;
+    startX = e.clientX;
+
+    // Convert CSS calc() bounds directly to inline pixel absolute to ensure clean drag math
+    const rect = element.getBoundingClientRect();
+    startLeft = rect.left;
+    element.style.left = `${startLeft}px`;
+    element.style.right = "auto";
+
+    target.setPointerCapture(e.pointerId);
+    element.classList.add("dragging");
+  });
+
+  target.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
+
+    const deltaX = e.clientX - startX;
+
+    // Threshold to distinguish click from drag
+    if (Math.abs(deltaX) > 3) {
+      hasMoved = true;
+    }
+
+    if (hasMoved) {
+      // Apply new left position. Ensure it doesn't go off-screen easily.
+      let newLeft = startLeft + deltaX;
+
+      // Optional: keep within viewport bounds
+      const maxLeft = window.innerWidth - element.offsetWidth;
+      newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+
+      element.style.left = `${newLeft}px`;
+      element.style.right = "auto"; // Override CSS right calc if any
+    }
+  });
+
+  target.addEventListener("pointerup", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    target.releasePointerCapture(e.pointerId);
+    element.classList.remove("dragging");
+
+    // If we didn't move past the threshold, treat it as a click
+    if (!hasMoved) {
       element.classList.toggle("minimized");
       element.classList.remove("fullscreen");
+      // Snap it back to its original layout if click triggered
+      if (!element.style.left || element.style.left.includes("px")) {
+        // keep the position since we didn't actually drag
+      }
     }
-  };
-
-  function dragMouseDown(e) {
-    if (e.target.closest("button")) return;
-
-    e.preventDefault();
-    pos3 = e.clientX;
-    hasDragged = false;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
-    element.classList.add("dragging");
-  }
-
-  function elementDrag(e) {
-    e.preventDefault();
-    if (Math.abs(pos3 - e.clientX) > 3) {
-      hasDragged = true;
-    }
-    pos1 = pos3 - e.clientX;
-    pos3 = e.clientX;
-
-    element.style.left = element.offsetLeft - pos1 + "px";
-  }
-
-  function closeDragElement(e) {
-    document.onmouseup = null;
-    document.onmousemove = null;
-    element.classList.remove("dragging");
-  }
+  });
 }
