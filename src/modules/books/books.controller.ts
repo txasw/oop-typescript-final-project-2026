@@ -221,12 +221,16 @@ export class BooksController {
   @SwaggerResponse({ status: 200, description: "คืนหนังสือสำเร็จ" })
   @SwaggerResponse({ status: 400, description: "หนังสือไม่ได้ถูกยืม" })
   @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
-  returnBook(@Param("id") id: string): ApiResponse<Book> {
-    const book = this.booksService.returnBook(id);
+  returnBook(@Param("id") id: string): ApiResponse<Record<string, unknown>> {
+    const result = this.booksService.returnBook(id);
+    const message =
+      result.fine > 0
+        ? `Book returned successfully. Overdue by ${result.overdueDays} day(s). Fine: ${result.fine} THB.`
+        : "Book returned successfully. No overdue fine.";
     return {
       success: true,
-      message: "Book returned successfully",
-      data: book,
+      message,
+      data: result,
     };
   }
 }
