@@ -77,10 +77,36 @@
               </button>
             </div>
           </div>
-          <div class="scrollable-content" id="booksContainer">
-            <!-- Books will be injected here -->
-            <div class="loading-spinner">
-              <i data-lucide="loader-2" class="spin"></i>
+          <div class="kanban-board" id="booksKanbanBoard">
+            <!-- Available Lane -->
+            <div class="kanban-lane" id="laneAvailable">
+              <div class="kanban-lane-header">
+                <h3><i data-lucide="check-circle"></i> Available</h3>
+                <span class="lane-count" id="countAvailable">0</span>
+              </div>
+              <div class="kanban-cards" id="cardsAvailable">
+                <div class="loading-spinner">
+                  <i data-lucide="loader-2" class="spin"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Borrowed Lane -->
+            <div class="kanban-lane" id="laneBorrowed">
+              <div class="kanban-lane-header">
+                <h3><i data-lucide="book-open"></i> Borrowed</h3>
+                <span class="lane-count" id="countBorrowed">0</span>
+              </div>
+              <div class="kanban-cards" id="cardsBorrowed"></div>
+            </div>
+
+            <!-- Reserved Lane -->
+            <div class="kanban-lane" id="laneReserved">
+              <div class="kanban-lane-header">
+                <h3><i data-lucide="clock"></i> Reserved</h3>
+                <span class="lane-count" id="countReserved">0</span>
+              </div>
+              <div class="kanban-cards" id="cardsReserved"></div>
             </div>
           </div>
         </section>
@@ -339,7 +365,7 @@
     <div class="modal-backdrop" id="memberModal">
       <div class="modal">
         <div class="modal-header">
-          <h3>Add New Member</h3>
+          <h3 id="memberModalTitle">Add New Member</h3>
           <button class="btn-close" onclick="closeModal('memberModal')">
             <i data-lucide="x"></i>
           </button>
@@ -352,6 +378,7 @@
               submitMemberForm();
             "
           >
+            <input type="hidden" id="memberId" />
             <div class="form-row">
               <div class="form-group">
                 <label>First Name</label>

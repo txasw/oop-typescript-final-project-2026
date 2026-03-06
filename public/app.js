@@ -222,6 +222,7 @@ function renderMembers(members) {
             </td>
             <td>${statusBadge}</td>
             <td>
+                <button class="btn btn-icon-small" onclick="editMember('${m.id}')" title="Edit"><i data-lucide="edit"></i></button>
                 <button class="btn btn-icon-small" onclick="deleteMember('${m.id}')" title="Delete"><i data-lucide="trash-2"></i></button>
             </td>
         `;
@@ -245,25 +246,42 @@ async function fetchBooks() {
 }
 
 function renderBooks(books) {
-  const container = document.getElementById("booksContainer");
-  container.innerHTML = "";
+  const containerAvailable = document.getElementById("cardsAvailable");
+  const containerBorrowed = document.getElementById("cardsBorrowed");
+  const containerReserved = document.getElementById("cardsReserved");
+
+  containerAvailable.innerHTML = "";
+  containerBorrowed.innerHTML = "";
+  containerReserved.innerHTML = "";
+
+  let countAvailable = 0,
+    countBorrowed = 0,
+    countReserved = 0;
 
   if (books.length === 0) {
-    container.innerHTML = '<div class="empty-state">No books found.</div>';
+    containerAvailable.innerHTML =
+      '<div class="empty-state">No books found.</div>';
+    document.getElementById("countAvailable").textContent = "0";
+    document.getElementById("countBorrowed").textContent = "0";
+    document.getElementById("countReserved").textContent = "0";
     return;
   }
-
-  const grid = document.createElement("div");
-  grid.className = "books-grid";
 
   books.forEach((b) => {
     const card = document.createElement("div");
     card.className = "book-card";
 
     let statusClass = "bg-maintenance";
-    if (b.status === "AVAILABLE") statusClass = "bg-available";
-    else if (b.status === "BORROWED") statusClass = "bg-borrowed";
-    else if (b.status === "RESERVED") statusClass = "bg-reserved";
+    if (b.status === "AVAILABLE") {
+      statusClass = "bg-available";
+      countAvailable++;
+    } else if (b.status === "BORROWED") {
+      statusClass = "bg-borrowed";
+      countBorrowed++;
+    } else if (b.status === "RESERVED") {
+      statusClass = "bg-reserved";
+      countReserved++;
+    }
 
     let datesHtml = "";
     if (b.status === "BORROWED") {
@@ -273,7 +291,20 @@ function renderBooks(books) {
                 <span>Due: ${due} ${isOverdue ? "(OVERDUE)" : ""}</span>
             </div>`;
     } else if (b.status === "RESERVED") {
-      datesHtml = `<div class="book-dates"><span>Reserved: ${b.reservedBy.length} in queue</span></div>`;
+      const queueNames =
+        b.reservedBy.length > 0
+          ? b.reservedBy
+              .map((pid) => {
+                const usr = _membersList.find((m) => m.id === pid);
+                return usr ? usr.firstName : pid;
+              })
+              .join(", ")
+          : "None";
+
+      datesHtml = `<div class="book-dates">
+                <span>Reserved: ${b.reservedBy.length} in queue</span>
+                <span class="text-muted" style="font-size:0.7rem; margin-top:4px;">Queue: ${queueNames}</span>
+            </div>`;
     }
 
     let buttonsHtml = "";
@@ -298,7 +329,6 @@ function renderBooks(books) {
                     <div class="book-author">by ${b.author}</div>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: flex-start;">
-                    <span class="status-badge ${statusClass}">${b.status}</span>
                     <button class="btn btn-icon-small text-danger" style="margin-top:-4px; margin-right:-4px" onclick="deleteBook('${b.id}')" title="Delete Book">
                         <i data-lucide="trash-2"></i>
                     </button>
@@ -315,10 +345,20 @@ function renderBooks(books) {
                 <div style="display:flex; gap:8px;">${buttonsHtml}</div>
             </div>
         `;
-    grid.appendChild(card);
+
+    if (b.status === "AVAILABLE") containerAvailable.appendChild(card);
+    else if (b.status === "BORROWED") containerBorrowed.appendChild(card);
+    else if (b.status === "RESERVED") containerReserved.appendChild(card);
+    else containerAvailable.appendChild(card);
   });
 
-  container.appendChild(grid);
+  document.getElementById("countAvailable").textContent =
+    countAvailable.toString();
+  document.getElementById("countBorrowed").textContent =
+    countBorrowed.toString();
+  document.getElementById("countReserved").textContent =
+    countReserved.toString();
+
   lucide.createIcons();
 }
 
@@ -444,10 +484,29 @@ async function deleteBook(id) {
 // MEMBERS
 function openMemberModal() {
   document.getElementById("memberForm").reset();
+  document.getElementById("memberId").value = "";
+  document.getElementById("memberModalTitle").textContent = "Add New Member";
+  openModal("memberModal");
+}
+
+function editMember(id) {
+  const m = _membersList.find((member) => member.id === id);
+  if (!m) return;
+  document.getElementById("memberForm").reset();
+  document.getElementById("memberId").value = m.id;
+  document.getElementById("memberModalTitle").textContent = "Edit Member";
+
+  document.getElementById("memberFirstName").value = m.firstName;
+  document.getElementById("memberLastName").value = m.lastName;
+  document.getElementById("memberEmail").value = m.email;
+  document.getElementById("memberPhone").value = m.phone;
+  document.getElementById("memberAddress").value = m.address;
+
   openModal("memberModal");
 }
 
 async function submitMemberForm() {
+  const id = document.getElementById("memberId").value;
   const payload = {
     firstName: document.getElementById("memberFirstName").value,
     lastName: document.getElementById("memberLastName").value,
@@ -459,12 +518,19 @@ async function submitMemberForm() {
   };
 
   document.querySelector('#memberForm button[type="submit"]').disabled = true;
-  const res = await apiPost("/members", payload);
+
+  let res;
+  if (id) {
+    res = await apiPut(`/members/${id}`, payload);
+  } else {
+    res = await apiPost("/members", payload);
+  }
+
   document.querySelector('#memberForm button[type="submit"]').disabled = false;
 
   if (res.success) {
     closeModal("memberModal");
-    showToast("Member added successfully!", "success");
+    showToast(`Member ${id ? "updated" : "added"} successfully!`, "success");
     fetchMembers();
     fetchStats();
   } else {
