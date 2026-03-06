@@ -35,9 +35,18 @@ async function bootstrap(): Promise<void> {
     .setVersion("1.0")
     .addTag("books", "จัดการข้อมูลหนังสือ")
     .addTag("members", "จัดการข้อมูลสมาชิก")
+    .addTag("transactions", "ประวัติการยืม-คืน")
+    .addTag("health", "ตรวจสอบสถานะระบบ")
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+  SwaggerModule.setup("api", app, document, {
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css",
+    customJs: [
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.min.js",
+    ],
+  });
 
   const port = 3000;
   await app.listen(port);
