@@ -625,3 +625,63 @@ i[data-lucide] {
   padding: 40px 20px;
   font-size: 0.875rem;
 }
+
+/* Toast Notifications */
+.toast-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 350px;
+  animation: slideIn 0.3s ease forwards;
+  transition: all 0.3s ease;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.toast-message {
+  flex: 1;
+}
+.toast-success i[data-lucide] {
+  color: var(--success);
+}
+.toast-error i[data-lucide] {
+  color: var(--danger);
+}
+.toast-warning i[data-lucide] {
+  color: var(--warning);
+}
+.toast-info i[data-lucide] {
+  color: var(--info);
+}
+.text-danger {
+  color: var(--danger) !important;
+}
+.text-danger:hover {
+  color: #dc2626 !important;
+  background-color: var(--danger-bg) !important;
+}

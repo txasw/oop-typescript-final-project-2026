@@ -227,11 +227,16 @@ function renderBooks(books) {
 
     card.innerHTML = `
             <div class="book-header">
-                <div>
+                <div style="padding-right: 24px;">
                     <div class="book-title">${b.title}</div>
                     <div class="book-author">by ${b.author}</div>
                 </div>
-                <span class="status-badge ${statusClass}">${b.status}</span>
+                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                    <span class="status-badge ${statusClass}">${b.status}</span>
+                    <button class="btn btn-icon-small text-danger" style="margin-top:-4px; margin-right:-4px" onclick="deleteBook('${b.id}')" title="Delete Book">
+                        <i data-lucide="trash-2"></i>
+                    </button>
+                </div>
             </div>
             <div class="book-meta">
                 <span class="book-isbn">${b.isbn}</span>
@@ -243,12 +248,7 @@ function renderBooks(books) {
                 ${datesHtml}
                 <div style="display:flex; gap:8px;">${buttonsHtml}</div>
             </div>
-            <button class="btn btn-icon-small" style="position:absolute; bottom:16px; left:16px; opacity: 0.5" onclick="deleteBook('${b.id}')" title="Delete">
-                <i data-lucide="trash-2"></i>
-            </button>
         `;
-    // Make card position relative for absolute trash pos
-    card.style.position = "relative";
     grid.appendChild(card);
   });
 
@@ -334,7 +334,7 @@ async function submitBookForm() {
     isbn: document.getElementById("bookIsbn").value,
     title: document.getElementById("bookTitle").value,
     author: document.getElementById("bookAuthor").value,
-    publishedYear: parseInt(document.getElementById("bookYear").value, 10),
+    publishedYear: parseInt(document.getElementById("bookYear").value, 10) || 0,
     publisher: document.getElementById("bookPublisher").value,
     category: document.getElementById("bookCategory").value,
     description: document.getElementById("bookDescription").value,
@@ -342,21 +342,30 @@ async function submitBookForm() {
     isAvailableForLoan: true,
   };
 
+  document.querySelector('#bookForm button[type="submit"]').disabled = true;
   const res = await apiPost("/books", payload);
+  document.querySelector('#bookForm button[type="submit"]').disabled = false;
+
   if (res.success) {
     closeModal("bookModal");
+    showToast("Book added successfully!", "success");
     fetchBooks();
     fetchStats();
   } else {
-    alert("Failed: " + JSON.stringify(res.message));
+    showToast(formatErrorMessage(res.message), "error");
   }
 }
 
 async function deleteBook(id) {
   if (!confirm("Are you sure you want to delete this book?")) return;
-  await apiDelete(`/books/${id}`);
-  fetchBooks();
-  fetchStats();
+  const res = await apiDelete(`/books/${id}`);
+  if (res.success) {
+    showToast("Book deleted", "success");
+    fetchBooks();
+    fetchStats();
+  } else {
+    showToast(formatErrorMessage(res.message), "error");
+  }
 }
 
 // MEMBERS
@@ -376,21 +385,30 @@ async function submitMemberForm() {
     maxBooksAllowed: 5,
   };
 
+  document.querySelector('#memberForm button[type="submit"]').disabled = true;
   const res = await apiPost("/members", payload);
+  document.querySelector('#memberForm button[type="submit"]').disabled = false;
+
   if (res.success) {
     closeModal("memberModal");
+    showToast("Member added successfully!", "success");
     fetchMembers();
     fetchStats();
   } else {
-    alert("Failed: " + JSON.stringify(res.message));
+    showToast(formatErrorMessage(res.message), "error");
   }
 }
 
 async function deleteMember(id) {
   if (!confirm("Are you sure you want to delete this member?")) return;
-  await apiDelete(`/members/${id}`);
-  fetchMembers();
-  fetchStats();
+  const res = await apiDelete(`/members/${id}`);
+  if (res.success) {
+    showToast("Member deleted", "success");
+    fetchMembers();
+    fetchStats();
+  } else {
+    showToast(formatErrorMessage(res.message), "error");
+  }
 }
 
 // ACTIONS (Borrow/Return/Reserve)
@@ -426,7 +444,10 @@ async function confirmAction() {
   const actionType = document.getElementById("actionType").value;
   const memberId = document.getElementById("actionMemberSelect").value;
 
-  if (!memberId) return alert("Please select a member.");
+  if (!memberId) {
+    showToast("Please select a member.", "warning");
+    return;
+  }
 
   // Disable btn
   document.getElementById("actionConfirmBtn").disabled = true;
@@ -436,9 +457,13 @@ async function confirmAction() {
 
   if (res.success) {
     closeModal("actionModal");
+    showToast(
+      `Successfully ${actionType === "borrow" ? "borrowed" : "reserved"} book!`,
+      "success",
+    );
     refreshAll();
   } else {
-    alert("Action failed: " + (res.message || "Unknown error"));
+    showToast(formatErrorMessage(res.message), "error");
     closeModal("actionModal");
   }
 }
@@ -448,13 +473,16 @@ async function returnBook(bookId) {
   const res = await apiPost(`/books/${bookId}/return`);
   if (res.success) {
     if (res.data?.fine > 0) {
-      alert(
+      showToast(
         `Book returned! Late fine applied: ${res.data.fine} THB (${res.data.overdueDays} days overdue)`,
+        "warning",
       );
+    } else {
+      showToast("Book returned successfully!", "success");
     }
     refreshAll();
   } else {
-    alert("Failed: " + (res.message || "Error"));
+    showToast(formatErrorMessage(res.message), "error");
   }
 }
 
@@ -463,4 +491,47 @@ function refreshAll() {
   fetchBooks();
   fetchMembers();
   fetchTransactions();
+}
+
+// === Utility: Toasts & Error Formatting ===
+function formatErrorMessage(msg) {
+  if (Array.isArray(msg)) {
+    return msg.join("<br>");
+  }
+  return msg || "An unknown error occurred";
+}
+
+function showToast(message, type = "info") {
+  let container = document.getElementById("toastWrapper");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toastWrapper";
+    container.className = "toast-wrapper";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+
+  let icon = "info";
+  if (type === "success") icon = "check-circle";
+  if (type === "error") icon = "alert-circle";
+  if (type === "warning") icon = "alert-triangle";
+
+  toast.innerHTML = `
+      <i data-lucide="\${icon}"></i>
+      <div class="toast-message">\${message}</div>
+      <button class="btn-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>
+  `;
+
+  container.appendChild(toast);
+  lucide.createIcons();
+
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.style.opacity = "0";
+      toast.style.transform = "translateY(10px)";
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, 5000);
 }
