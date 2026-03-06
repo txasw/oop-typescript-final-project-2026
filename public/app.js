@@ -676,6 +676,11 @@ function showToast(message, type = "info") {
   if (type === "warning") icon = "alert-triangle";
 
   toast.innerHTML = `
+      <i data-lucide="${icon}"></i>
+      <div class="toast-message">${message}</div>
+      <button class="btn-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>
+  `;
+
   container.appendChild(toast);
   lucide.createIcons();
 
@@ -709,13 +714,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const apiTerminal = document.getElementById("apiTerminal");
   const apiTerminalHeader = document.getElementById("apiTerminalHeader");
   if (apiTerminal && apiTerminalHeader) {
-    
     // Explicitly set the inline style coords instead of relying purely on CSS calc
     // This allows CSS 'all' transition to animate smoothly when escaping fullscreen back to origin
     setTimeout(() => {
-        const rect = apiTerminal.getBoundingClientRect();
-        apiTerminal.style.top = `${rect.top}px`;
-        apiTerminal.style.left = `${rect.left}px`;
+      const rect = apiTerminal.getBoundingClientRect();
+      apiTerminal.style.top = `${rect.top}px`;
+      apiTerminal.style.left = `${rect.left}px`;
     }, 100);
 
     makeDraggable(apiTerminal, apiTerminalHeader);
