@@ -252,7 +252,7 @@ i[data-lucide] {
   gap: 16px;
   height: 100%;
   overflow-x: auto;
-  padding-bottom: 8px;
+  padding: 20px;
 }
 
 .kanban-lane {

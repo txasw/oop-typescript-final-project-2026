@@ -13,7 +13,7 @@
     />
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="style.css?v=4" />
+    <link rel="stylesheet" href="style.css?v=5" />
   </head>
   <body>
     <div class="app-container">
@@ -432,6 +432,46 @@
               <label>Address</label>
               <input type="text" id="memberAddress" required />
             </div>
+            <div class="form-group">
+              <label>Status</label>
+              <div class="custom-select" id="custom-memberStatus">
+                <input
+                  type="hidden"
+                  id="memberStatus"
+                  value="ACTIVE"
+                  required
+                />
+                <div
+                  class="select-trigger"
+                  onclick="toggleSelect('custom-memberStatus')"
+                >
+                  <span class="select-label">Active</span>
+                  <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="select-options">
+                  <div
+                    class="select-option"
+                    onclick="
+                      selectOption('custom-memberStatus', 'ACTIVE', 'Active')
+                    "
+                  >
+                    Active
+                  </div>
+                  <div
+                    class="select-option"
+                    onclick="
+                      selectOption(
+                        'custom-memberStatus',
+                        'INACTIVE',
+                        'Inactive',
+                      )
+                    "
+                  >
+                    Inactive
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="form-actions">
               <button
                 type="button"
@@ -535,6 +575,6 @@
       </div>
     </div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
   </body>
 </html>

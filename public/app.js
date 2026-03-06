@@ -496,6 +496,10 @@ function openMemberModal() {
   document.getElementById("memberForm").reset();
   document.getElementById("memberId").value = "";
   document.getElementById("memberModalTitle").textContent = "Add New Member";
+
+  // Reset custom status dropdown
+  selectOption("custom-memberStatus", "ACTIVE", "Active");
+
   openModal("memberModal");
 }
 
@@ -512,6 +516,10 @@ function editMember(id) {
   document.getElementById("memberPhone").value = m.phone;
   document.getElementById("memberAddress").value = m.address;
 
+  // Set custom status dropdown
+  const statusLabel = m.status === "ACTIVE" ? "Active" : "Inactive";
+  selectOption("custom-memberStatus", m.status, statusLabel);
+
   openModal("memberModal");
 }
 
@@ -523,7 +531,7 @@ async function submitMemberForm() {
     email: document.getElementById("memberEmail").value,
     phone: document.getElementById("memberPhone").value,
     address: document.getElementById("memberAddress").value,
-    status: "ACTIVE",
+    status: document.getElementById("memberStatus").value,
     maxBooksAllowed: 5,
   };
 
