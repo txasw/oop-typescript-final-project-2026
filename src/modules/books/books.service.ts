@@ -17,6 +17,7 @@ import { generateId } from "../../common/utils/generate-id.util";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { PaginatedResponse } from "../../common/interfaces/paginated-response.interface";
 import { MembersService } from "../members/members.service";
+import { TransactionsService } from "../transactions/transactions.service";
 import { bookSeeds } from "./data/book-seeds";
 
 /**
@@ -27,6 +28,8 @@ export class BooksService {
   constructor(
     @Inject(forwardRef(() => MembersService))
     private readonly membersService: MembersService,
+    @Inject(forwardRef(() => TransactionsService))
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   private books: Book[] = [...bookSeeds];
@@ -259,6 +262,20 @@ export class BooksService {
     // Update member's borrowed list
     this.membersService.addBorrowedBook(memberId, bookId);
 
+    // Record transaction
+    this.transactionsService.record({
+      bookId,
+      bookTitle: book.title,
+      memberId,
+      memberName: `${member.firstName} ${member.lastName}`,
+      action: "BORROW",
+      borrowedAt: now.toISOString(),
+      dueDate: dueDate.toISOString(),
+      returnedAt: null,
+      fine: 0,
+      overdueDays: 0,
+    });
+
     return this.books[bookIndex];
   }
 
@@ -309,6 +326,20 @@ export class BooksService {
 
     // Remove from member's borrowed list
     this.membersService.removeBorrowedBook(borrowerId, bookId);
+
+    // Record transaction
+    this.transactionsService.record({
+      bookId,
+      bookTitle: book.title,
+      memberId: borrowerId,
+      memberName: "", // snapshot not available on return
+      action: "RETURN",
+      borrowedAt: book.borrowedAt ?? "",
+      dueDate: book.dueDate ?? "",
+      returnedAt: new Date().toISOString(),
+      fine,
+      overdueDays,
+    });
 
     return { book: this.books[bookIndex], fine, overdueDays };
   }
