@@ -35,13 +35,13 @@ export class BooksService {
   private books: Book[] = [...bookSeeds];
 
   /**
-   * ดึงรายการหนังสือทั้งหมด พร้อม search, filter, pagination
+   * ดึงรายการหนังสือทั้งหมด พร้อม search, filter, pagination (กรองข้อมูลที่ถูก soft delete ออก)
    */
   findAll(
     paginationDto: PaginationDto,
     filterDto: FilterBookDto,
   ): PaginatedResponse<Book> {
-    let filtered = [...this.books];
+    let filtered = this.books.filter((b) => b.deletedAt === null);
 
     // Filter by category
     if (filterDto.category) {
@@ -90,7 +90,7 @@ export class BooksService {
    * @throws NotFoundException ถ้าไม่พบหนังสือ
    */
   findOne(id: string): Book {
-    const book = this.books.find((b) => b.id === id);
+    const book = this.books.find((b) => b.id === id && b.deletedAt === null);
     if (!book) {
       throw new NotFoundException(`Book with ID "${id}" not found`);
     }
@@ -116,6 +116,7 @@ export class BooksService {
       currentBorrowerId: null,
       borrowedAt: null,
       dueDate: null,
+      deletedAt: null,
       createdAt: now,
       updatedAt: now,
     };
@@ -148,6 +149,7 @@ export class BooksService {
       currentBorrowerId: existingBook.currentBorrowerId,
       borrowedAt: existingBook.borrowedAt,
       dueDate: existingBook.dueDate,
+      deletedAt: existingBook.deletedAt,
       createdAt: existingBook.createdAt,
       updatedAt: new Date().toISOString(),
     };
@@ -200,14 +202,14 @@ export class BooksService {
    * @throws NotFoundException ถ้าไม่พบหนังสือ
    */
   remove(id: string): Book {
+    const book = this.findOne(id);
     const bookIndex = this.books.findIndex((b) => b.id === id);
-    if (bookIndex === -1) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
-    }
-
-    const deletedBook = this.books[bookIndex];
-    this.books.splice(bookIndex, 1);
-    return deletedBook;
+    this.books[bookIndex] = {
+      ...book,
+      deletedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return this.books[bookIndex];
   }
 
   /**

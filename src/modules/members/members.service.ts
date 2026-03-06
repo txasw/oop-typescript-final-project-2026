@@ -33,7 +33,7 @@ export class MembersService {
     paginationDto: PaginationDto,
     filterDto: FilterMemberDto,
   ): PaginatedResponse<Member> {
-    let filtered = [...this.members];
+    let filtered = this.members.filter((m) => m.deletedAt === null);
 
     // Filter by status
     if (filterDto.status) {
@@ -77,7 +77,9 @@ export class MembersService {
    * @throws NotFoundException ถ้าไม่พบสมาชิก
    */
   findOne(id: string): Member {
-    const member = this.members.find((m) => m.id === id);
+    const member = this.members.find(
+      (m) => m.id === id && m.deletedAt === null,
+    );
     if (!member) {
       throw new NotFoundException(`Member with ID "${id}" not found`);
     }
@@ -100,6 +102,7 @@ export class MembersService {
       status: createMemberDto.status ?? MemberStatus.ACTIVE,
       maxBooksAllowed: createMemberDto.maxBooksAllowed ?? 5,
       borrowedBookIds: [],
+      deletedAt: null,
       registeredAt: now,
       updatedAt: now,
     };
@@ -129,6 +132,7 @@ export class MembersService {
       status: updateMemberDto.status,
       maxBooksAllowed: updateMemberDto.maxBooksAllowed,
       borrowedBookIds: existingMember.borrowedBookIds,
+      deletedAt: existingMember.deletedAt,
       registeredAt: existingMember.registeredAt,
       updatedAt: new Date().toISOString(),
     };
@@ -183,14 +187,14 @@ export class MembersService {
    * @throws NotFoundException ถ้าไม่พบสมาชิก
    */
   remove(id: string): Member {
+    const member = this.findOne(id);
     const memberIndex = this.members.findIndex((m) => m.id === id);
-    if (memberIndex === -1) {
-      throw new NotFoundException(`Member with ID "${id}" not found`);
-    }
-
-    const deletedMember = this.members[memberIndex];
-    this.members.splice(memberIndex, 1);
-    return deletedMember;
+    this.members[memberIndex] = {
+      ...member,
+      deletedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return this.members[memberIndex];
   }
 
   /**

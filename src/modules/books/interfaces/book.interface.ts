@@ -45,6 +45,9 @@ export interface Book {
   /** กำหนดคืน (null ถ้าไม่ได้ถูกยืม) */
   dueDate: string | null;
 
+  /** วันที่ลบ (null ถ้ายังไม่ถูกลบ) */
+  deletedAt: string | null;
+
   /** วันที่เพิ่มเข้าระบบ */
   createdAt: string;
 

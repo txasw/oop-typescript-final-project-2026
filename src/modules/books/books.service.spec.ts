@@ -66,6 +66,7 @@ describe("BooksService", () => {
         address: "12",
         registeredAt: "",
         updatedAt: "",
+        deletedAt: null,
       });
       expect(() => service.borrow("invalid-id", "member-1")).toThrow(
         NotFoundException,
@@ -90,6 +91,7 @@ describe("BooksService", () => {
         address: "12",
         registeredAt: "",
         updatedAt: "",
+        deletedAt: null,
       });
 
       const borrowed = service.borrow(targetBook.id, "member-1");
