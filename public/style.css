@@ -610,13 +610,8 @@ i[data-lucide] {
   flex-direction: column;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
   z-index: 1000;
-  /* Specifically exclude 'left' and 'top' from default transition to allow instant JS dragging */
-  transition:
-    width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Transition all properties to allow smooth interpolation to and from fullscreen */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .api-terminal.dragging {
