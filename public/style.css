@@ -605,28 +605,26 @@ i[data-lucide] {
   height: 350px;
   background: #000;
   border: 1px solid #333;
-  border-radius: 6px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
   z-index: 1000;
-  transition:
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s,
-    width 0.3s,
-    height 0.3s,
-    left 0.3s,
-    bottom 0.3s,
-    right 0.3s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.api-terminal.dragging {
+  transition: none !important;
 }
 
 .api-terminal.fullscreen {
-  width: 94vw !important;
-  height: 90vh !important;
-  left: 3vw !important;
-  bottom: 3vh !important;
+  width: calc(100vw - 32px) !important;
+  height: calc(100vh - 32px) !important;
+  left: 16px !important;
+  bottom: 16px !important;
   right: auto !important;
   transform: none;
+  border-radius: 12px;
 }
 
 .api-terminal.minimized {

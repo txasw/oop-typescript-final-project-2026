@@ -696,42 +696,50 @@ function showToast(message, type = "info") {
 // === Floating Terminal Draggable Logic ===
 function makeDraggable(element, handle) {
   let pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0;
+    pos3 = 0;
+  let hasDragged = false;
 
-  if (handle) {
-    handle.onmousedown = dragMouseDown;
-  } else {
-    element.onmousedown = dragMouseDown;
-  }
+  const target = handle || element;
+  target.onmousedown = dragMouseDown;
 
   function dragMouseDown(e) {
-    // Prevent dragging if clicking a button inside the header
     if (e.target.closest("button")) return;
 
     e.preventDefault();
     pos3 = e.clientX;
-    pos4 = e.clientY;
+    hasDragged = false;
     document.onmouseup = closeDragElement;
     document.onmousemove = elementDrag;
+    element.classList.add("dragging");
   }
 
   function elementDrag(e) {
     e.preventDefault();
+    if (Math.abs(pos3 - e.clientX) > 3) {
+      hasDragged = true;
+    }
     pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
-    pos4 = e.clientY;
 
-    element.style.top = element.offsetTop - pos2 + "px";
     element.style.left = element.offsetLeft - pos1 + "px";
-    element.style.bottom = "auto";
     element.style.right = "auto";
   }
 
-  function closeDragElement() {
+  function closeDragElement(e) {
     document.onmouseup = null;
     document.onmousemove = null;
+    element.classList.remove("dragging");
+
+    // Toggle minimize if it was just a click
+    if (
+      !hasDragged &&
+      e &&
+      e.target &&
+      e.target.closest(".terminal-header") &&
+      !e.target.closest("button")
+    ) {
+      element.classList.toggle("minimized");
+      element.classList.remove("fullscreen");
+    }
   }
 }
