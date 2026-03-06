@@ -111,6 +111,8 @@ export class BooksService {
       status: createBookDto.status ?? BookStatus.AVAILABLE,
       isAvailableForLoan: createBookDto.isAvailableForLoan ?? true,
       currentBorrowerId: null,
+      borrowedAt: null,
+      dueDate: null,
       createdAt: now,
       updatedAt: now,
     };
@@ -141,6 +143,8 @@ export class BooksService {
       status: updateBookDto.status,
       isAvailableForLoan: updateBookDto.isAvailableForLoan,
       currentBorrowerId: existingBook.currentBorrowerId,
+      borrowedAt: existingBook.borrowedAt,
+      dueDate: existingBook.dueDate,
       createdAt: existingBook.createdAt,
       updatedAt: new Date().toISOString(),
     };
@@ -240,12 +244,16 @@ export class BooksService {
     }
 
     // Update book status
+    const now = new Date();
+    const dueDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     const bookIndex = this.books.findIndex((b) => b.id === bookId);
     this.books[bookIndex] = {
       ...book,
       status: BookStatus.BORROWED,
       currentBorrowerId: memberId,
-      updatedAt: new Date().toISOString(),
+      borrowedAt: now.toISOString(),
+      dueDate: dueDate.toISOString(),
+      updatedAt: now.toISOString(),
     };
 
     // Update member's borrowed list
@@ -255,11 +263,15 @@ export class BooksService {
   }
 
   /**
-   * คืนหนังสือ
+   * คืนหนังสือ — คำนวณค่าปรับถ้าเลยกำหนด (10 บาท/วัน)
    * @throws NotFoundException ถ้าไม่พบหนังสือ
    * @throws BadRequestException ถ้าหนังสือไม่ได้ถูกยืม
    */
-  returnBook(bookId: string): Book {
+  returnBook(bookId: string): {
+    book: Book;
+    fine: number;
+    overdueDays: number;
+  } {
     const book = this.findOne(bookId);
 
     if (book.status !== BookStatus.BORROWED || !book.currentBorrowerId) {
@@ -270,19 +282,35 @@ export class BooksService {
 
     const borrowerId = book.currentBorrowerId;
 
+    // Calculate overdue fine
+    let fine = 0;
+    let overdueDays = 0;
+    if (book.dueDate) {
+      const now = new Date();
+      const due = new Date(book.dueDate);
+      if (now > due) {
+        overdueDays = Math.ceil(
+          (now.getTime() - due.getTime()) / (1000 * 60 * 60 * 24),
+        );
+        fine = overdueDays * 10; // 10 THB per day
+      }
+    }
+
     // Update book status
     const bookIndex = this.books.findIndex((b) => b.id === bookId);
     this.books[bookIndex] = {
       ...book,
       status: BookStatus.AVAILABLE,
       currentBorrowerId: null,
+      borrowedAt: null,
+      dueDate: null,
       updatedAt: new Date().toISOString(),
     };
 
     // Remove from member's borrowed list
     this.membersService.removeBorrowedBook(borrowerId, bookId);
 
-    return this.books[bookIndex];
+    return { book: this.books[bookIndex], fine, overdueDays };
   }
 
   /**

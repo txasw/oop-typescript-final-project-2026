@@ -39,6 +39,12 @@ export interface Book {
   /** ID ของสมาชิกที่ยืมอยู่ (null ถ้าไม่มีคนยืม) */
   currentBorrowerId: string | null;
 
+  /** วันที่ยืม (null ถ้าไม่ได้ถูกยืม) */
+  borrowedAt: string | null;
+
+  /** กำหนดคืน (null ถ้าไม่ได้ถูกยืม) */
+  dueDate: string | null;
+
   /** วันที่เพิ่มเข้าระบบ */
   createdAt: string;
 
