@@ -392,9 +392,15 @@ export class BooksService {
     }
 
     if (book.currentBorrowerId === memberId) {
-      throw new BadRequestException(
-        `Member "${member.firstName} ${member.lastName}" is already borrowing this book.`,
-      );
+      if (book.status === BookStatus.BORROWED) {
+        throw new BadRequestException(
+          `Member "${member.firstName} ${member.lastName}" is already borrowing this book.`,
+        );
+      } else if (book.status === BookStatus.RESERVED) {
+        throw new BadRequestException(
+          `Member "${member.firstName} ${member.lastName}" is already first in line to pick up this book.`,
+        );
+      }
     }
 
     if (book.reservedBy.includes(memberId)) {
