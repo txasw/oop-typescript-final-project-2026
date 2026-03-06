@@ -35,6 +35,9 @@ export interface Member {
   /** รายการ Book IDs ที่ยืมอยู่ */
   borrowedBookIds: string[];
 
+  /** วันที่ลบ (null ถ้ายังไม่ถูกลบ) */
+  deletedAt: string | null;
+
   /** วันที่สมัครสมาชิก */
   registeredAt: string;
 
