@@ -92,13 +92,29 @@ function selectOption(wrapperId, value, label) {
   wrapper.classList.remove("active");
 }
 
+let confirmPromiseResolve = null;
+
+function customConfirm(message) {
+  document.getElementById("customConfirmMessage").textContent = message;
+  document.getElementById("customConfirmModal").classList.add("active");
+  return new Promise((resolve) => {
+    confirmPromiseResolve = resolve;
+  });
+}
+
+function closeCustomConfirm(result) {
+  document.getElementById("customConfirmModal").classList.remove("active");
+  if (confirmPromiseResolve) {
+    confirmPromiseResolve(result);
+    confirmPromiseResolve = null;
+  }
+}
+
 async function resetDatabase() {
-  if (
-    !confirm(
-      "Are you sure you want to reset all data back to the default seed state? This action cannot be undone.",
-    )
-  )
-    return;
+  const confirmed = await customConfirm(
+    "Are you sure you want to reset all data back to the default seed state? This action cannot be undone.",
+  );
+  if (!confirmed) return;
   const res = await apiPost("/reset", {});
   if (res.success) {
     showToast("Database reset successfully!", "success");
@@ -411,7 +427,10 @@ async function submitBookForm() {
 }
 
 async function deleteBook(id) {
-  if (!confirm("Are you sure you want to delete this book?")) return;
+  const confirmed = await customConfirm(
+    "Are you sure you want to delete this book?",
+  );
+  if (!confirmed) return;
   const res = await apiDelete(`/books/${id}`);
   if (res.success) {
     showToast("Book deleted", "success");
@@ -454,7 +473,10 @@ async function submitMemberForm() {
 }
 
 async function deleteMember(id) {
-  if (!confirm("Are you sure you want to delete this member?")) return;
+  const confirmed = await customConfirm(
+    "Are you sure you want to delete this member?",
+  );
+  if (!confirmed) return;
   const res = await apiDelete(`/members/${id}`);
   if (res.success) {
     showToast("Member deleted", "success");
@@ -527,7 +549,8 @@ async function confirmAction() {
 }
 
 async function returnBook(bookId) {
-  if (!confirm("Return this book?")) return;
+  const confirmed = await customConfirm("Return this book?");
+  if (!confirmed) return;
   const res = await apiPost(`/books/${bookId}/return`);
   if (res.success) {
     if (res.data?.fine > 0) {
