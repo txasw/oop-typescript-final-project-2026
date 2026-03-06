@@ -284,26 +284,36 @@ function renderBooks(books) {
     }
 
     let datesHtml = "";
+    const queueNames =
+      b.reservedBy.length > 0
+        ? b.reservedBy
+            .map((pid) => {
+              const usr = _membersList.find((m) => m.id === pid);
+              return usr ? usr.firstName : pid;
+            })
+            .join(", ")
+        : "";
+
     if (b.status === "BORROWED") {
       const due = new Date(b.dueDate).toLocaleDateString();
       const isOverdue = new Date() > new Date(b.dueDate);
+      const borrower = b.currentBorrowerId
+        ? _membersList.find((m) => m.id === b.currentBorrowerId)?.firstName
+        : "";
+
       datesHtml = `<div class="book-dates ${isOverdue ? "due-alert" : ""}">
+                <span>With: <strong>${borrower}</strong></span>
                 <span>Due: ${due} ${isOverdue ? "(OVERDUE)" : ""}</span>
+                ${queueNames ? `<span class="text-muted" style="font-size:0.75rem; margin-top:4px;">Queue: ${queueNames}</span>` : ""}
             </div>`;
     } else if (b.status === "RESERVED") {
-      const queueNames =
-        b.reservedBy.length > 0
-          ? b.reservedBy
-              .map((pid) => {
-                const usr = _membersList.find((m) => m.id === pid);
-                return usr ? usr.firstName : pid;
-              })
-              .join(", ")
-          : "None";
+      const pickupBy = b.currentBorrowerId
+        ? _membersList.find((m) => m.id === b.currentBorrowerId)?.firstName
+        : "";
 
       datesHtml = `<div class="book-dates">
-                <span>Reserved: ${b.reservedBy.length} in queue</span>
-                <span class="text-muted" style="font-size:0.7rem; margin-top:4px;">Queue: ${queueNames}</span>
+                <span style="color:var(--info)">Ready for pickup by: <strong>${pickupBy}</strong></span>
+                ${queueNames ? `<span class="text-muted" style="font-size:0.75rem; margin-top:4px;">Next in queue: ${queueNames}</span>` : ""}
             </div>`;
     }
 
@@ -681,4 +691,47 @@ function showToast(message, type = "info") {
       setTimeout(() => toast.remove(), 300);
     }
   }, 5000);
+}
+
+// === Floating Terminal Draggable Logic ===
+function makeDraggable(element, handle) {
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+
+  if (handle) {
+    handle.onmousedown = dragMouseDown;
+  } else {
+    element.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    // Prevent dragging if clicking a button inside the header
+    if (e.target.closest("button")) return;
+
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+
+    element.style.top = element.offsetTop - pos2 + "px";
+    element.style.left = element.offsetLeft - pos1 + "px";
+    element.style.bottom = "auto";
+    element.style.right = "auto";
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
 }

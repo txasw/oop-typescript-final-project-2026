@@ -166,24 +166,40 @@
           </section>
         </div>
       </main>
+    </div>
 
-      <!-- API Log Terminal -->
-      <footer class="api-terminal">
-        <div class="terminal-header">
-          <div><i data-lucide="terminal"></i> API Request Log</div>
+    <!-- Floating API Log Terminal -->
+    <div class="api-terminal floating" id="apiTerminal">
+      <div class="terminal-header" id="apiTerminalHeader">
+        <div style="display: flex; align-items: center; gap: 8px">
+          <i data-lucide="terminal"></i> API Request Log
+        </div>
+        <div style="display: flex; gap: 8px">
           <button
             class="btn btn-icon-small"
             onclick="document.getElementById('apiLogContent').innerHTML = ''"
+            title="Clear Log"
           >
             <i data-lucide="trash-2"></i>
           </button>
+          <button
+            class="btn btn-icon-small"
+            onclick="
+              document
+                .getElementById('apiTerminal')
+                .classList.toggle('minimized')
+            "
+            title="Toggle Minimize"
+          >
+            <i data-lucide="minus"></i>
+          </button>
         </div>
-        <div class="terminal-content" id="apiLogContent">
-          <div class="log-entry info">
-            Simulator initialized. Ready to capture network requests.
-          </div>
+      </div>
+      <div class="terminal-content" id="apiLogContent">
+        <div class="log-entry info">
+          Simulator initialized. Ready to capture network requests.
         </div>
-      </footer>
+      </div>
     </div>
 
     <!-- Modals (Hidden by default) -->
