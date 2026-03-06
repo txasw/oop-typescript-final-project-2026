@@ -39,6 +39,9 @@ export interface Book {
   /** ID ของสมาชิกที่ยืมอยู่ (null ถ้าไม่มีคนยืม) */
   currentBorrowerId: string | null;
 
+  /** คิวจองหนังสือ (Member IDs ที่จองหนังสือเล่มนี้ไว้) */
+  reservedBy: string[];
+
   /** วันที่ยืม (null ถ้าไม่ได้ถูกยืม) */
   borrowedAt: string | null;
 
