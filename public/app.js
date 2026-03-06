@@ -676,11 +676,6 @@ function showToast(message, type = "info") {
   if (type === "warning") icon = "alert-triangle";
 
   toast.innerHTML = `
-      <i data-lucide="${icon}"></i>
-      <div class="toast-message">${message}</div>
-      <button class="btn-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>
-  `;
-
   container.appendChild(toast);
   lucide.createIcons();
 
@@ -693,11 +688,36 @@ function showToast(message, type = "info") {
   }, 5000);
 }
 
+function appendToTimeline(actionHtml) {
+  const timeline = document.getElementById("transactionsTimeline");
+  if (!timeline) return;
+
+  // Remove empty state if present
+  const emptyState = timeline.querySelector(".empty-state");
+  if (emptyState) {
+    emptyState.remove();
+  }
+
+  const entry = document.createElement("div");
+  entry.className = "timeline-item";
+  entry.innerHTML = actionHtml;
+  timeline.insertBefore(entry, timeline.firstChild);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // === Floating Terminal Init ===
   const apiTerminal = document.getElementById("apiTerminal");
   const apiTerminalHeader = document.getElementById("apiTerminalHeader");
   if (apiTerminal && apiTerminalHeader) {
+    
+    // Explicitly set the inline style coords instead of relying purely on CSS calc
+    // This allows CSS 'all' transition to animate smoothly when escaping fullscreen back to origin
+    setTimeout(() => {
+        const rect = apiTerminal.getBoundingClientRect();
+        apiTerminal.style.top = `${rect.top}px`;
+        apiTerminal.style.left = `${rect.left}px`;
+    }, 100);
+
     makeDraggable(apiTerminal, apiTerminalHeader);
   }
 });
@@ -749,7 +769,7 @@ function makeDraggable(element, handle) {
       newLeft = Math.max(padding, Math.min(newLeft, maxLeft));
 
       element.style.left = `${newLeft}px`;
-      element.style.right = "auto"; // Override CSS right calc if any
+      // We don't need right: auto anymore, as explicit css layout overrides it
     }
   });
 
