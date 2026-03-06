@@ -118,7 +118,7 @@ async function fetchMembers() {
   try {
     const res = await apiGet("/members");
     if (res.success) {
-      _membersList = res.data;
+      _membersList = res.data.items || res.data;
       renderMembers(_membersList);
       updateActionMemberSelect();
     }
@@ -171,7 +171,7 @@ async function fetchBooks() {
   try {
     const res = await apiGet(url);
     if (res.success) {
-      renderBooks(res.data);
+      renderBooks(res.data.items || res.data);
     }
   } catch (e) {
     console.error(e);
@@ -260,7 +260,7 @@ async function fetchTransactions() {
   try {
     const res = await apiGet("/transactions?limit=20");
     if (res.success) {
-      renderTransactions(res.data);
+      renderTransactions(res.data.items || res.data);
     }
   } catch (e) {
     console.error(e);
