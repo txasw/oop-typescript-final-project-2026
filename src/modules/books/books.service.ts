@@ -227,6 +227,14 @@ export class BooksService {
     if (book.status === BookStatus.BORROWED) {
       throw new BadRequestException(`Book "${book.title}" is already borrowed`);
     }
+    if (
+      book.status === BookStatus.RESERVED &&
+      book.currentBorrowerId !== memberId
+    ) {
+      throw new BadRequestException(
+        `Book "${book.title}" is currently reserved by another member`,
+      );
+    }
     if (!book.isAvailableForLoan) {
       throw new BadRequestException(
         `Book "${book.title}" is not available for loan`,
@@ -322,17 +330,18 @@ export class BooksService {
     if (book.reservedBy.length > 0) {
       const nextMemberId = book.reservedBy[0];
       const now = new Date();
-      const newDueDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
       this.books[bookIndex] = {
         ...book,
         status: BookStatus.RESERVED,
         currentBorrowerId: nextMemberId,
         reservedBy: book.reservedBy.slice(1),
-        borrowedAt: now.toISOString(),
-        dueDate: newDueDate.toISOString(),
+        borrowedAt: null,
+        dueDate: null,
         updatedAt: now.toISOString(),
       };
-      this.membersService.addBorrowedBook(nextMemberId, bookId);
+
+      // Removed addBorrowedBook here. The user only officially "borrows" the book when they explicitly pick it up via borrow().
     } else {
       this.books[bookIndex] = {
         ...book,
