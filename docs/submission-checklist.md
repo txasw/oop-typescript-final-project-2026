@@ -37,6 +37,14 @@
 - [x] 4.7 Swagger OpenAPI implementation
 - [x] 4.8 Unit Tests (BooksService, MembersService)
 
+## 5. Extra Features (Beyond Requirements)
+
+- [x] 5.1 **Soft Delete**: `deletedAt` for Books and Members
+- [x] 5.2 **Reservation System**: Queueing (`reservedBy`) for borrowed books
+- [x] 5.3 **Transactions History**: Tracking borrow/return actions via `/transactions`
+- [x] 5.4 **Due Dates & Fines**: Auto calculating `dueDate` and `fine` (10 THB/day)
+- [x] 5.5 **Swagger UI Fix for Vercel**: Using CDN assets for Serverless compatibility
+
 ---
 
 **Status:** ALL CHECKED AND READY FOR SUBMISSION. ✅

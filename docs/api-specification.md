@@ -101,10 +101,39 @@ interface ApiResponse<T> {
 
 ### POST /books/:id/return
 
-คืนหนังสือที่ถูกยืม
+คืนหนังสือที่ถูกยืม และระบบจะคำนวณค่าปรับอัตโนมัติ (และเปลี่ยนสถานะเป็น `RESERVED` ถัดไปหากมีคิว)
 
 - **Parameters:** `id` (UUID ของหนังสือ)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
+- **Response Data Example:**
+
+```json
+{
+  "success": true,
+  "message": "Book returned successfully",
+  "data": {
+    "book": { ... },
+    "fine": 150,
+    "overdueDays": 3
+  }
+}
+```
+
+---
+
+### POST /books/:id/reserve
+
+จองหนังสือ (ต้องเป็นหนังสือที่มีสถานะ `BORROWED` หรือ `RESERVED` อยู่ และยังไม่ถึงคิวตัวเอง)
+
+- **Parameters:** `id` (UUID ของหนังสือ)
+- **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
+- **Body:**
+
+```json
+{
+  "memberId": "member-uuid"
+}
+```
 
 ---
 
@@ -165,7 +194,7 @@ interface ApiResponse<T> {
 
 ### DELETE /books/:id
 
-ลบหนังสือตาม ID
+ลบหนังสือตาม ID (ใช้วิธีนำไป Soft Delete โดยปรับค่า `deletedAt` แทนการลบจากตารางจริง)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
@@ -255,10 +284,25 @@ interface ApiResponse<T> {
 
 ### DELETE /members/:id
 
-ลบสมาชิกตาม ID
+ลบสมาชิกตาม ID (Soft Delete)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
+
+---
+
+## Transactions API (`/transactions`)
+
+### GET /transactions
+
+ดึงรายการประวัติการยืม-คืนหนังสือทั้งหมด (รองรับ กรอง และ แบ่งหน้า)
+
+- **Query Parameters:**
+  - `page` (number, default: 1)
+  - `limit` (number, default: 10)
+  - `bookId` (string) — กรองตามรหัสหนังสือ
+  - `memberId` (string) — กรองตามรหัสสมาชิก
+- **Response:** `200 OK`
 
 ---
 
