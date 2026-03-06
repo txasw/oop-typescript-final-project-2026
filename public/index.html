@@ -185,9 +185,24 @@
           <button
             class="btn btn-icon-small"
             onclick="
-              document
-                .getElementById('apiTerminal')
-                .classList.toggle('minimized')
+              (function () {
+                const t = document.getElementById('apiTerminal');
+                t.classList.toggle('fullscreen');
+                t.classList.remove('minimized');
+              })()
+            "
+            title="Toggle Fullscreen"
+          >
+            <i data-lucide="maximize"></i>
+          </button>
+          <button
+            class="btn btn-icon-small"
+            onclick="
+              (function () {
+                const t = document.getElementById('apiTerminal');
+                t.classList.toggle('minimized');
+                t.classList.remove('fullscreen');
+              })()
             "
             title="Toggle Minimize"
           >

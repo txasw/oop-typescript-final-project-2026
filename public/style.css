@@ -612,7 +612,21 @@ i[data-lucide] {
   z-index: 1000;
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s;
+    opacity 0.3s,
+    width 0.3s,
+    height 0.3s,
+    left 0.3s,
+    bottom 0.3s,
+    right 0.3s;
+}
+
+.api-terminal.fullscreen {
+  width: 94vw !important;
+  height: 90vh !important;
+  left: 3vw !important;
+  bottom: 3vh !important;
+  right: auto !important;
+  transform: none;
 }
 
 .api-terminal.minimized {
