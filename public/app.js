@@ -92,6 +92,30 @@ function selectOption(wrapperId, value, label) {
   wrapper.classList.remove("active");
 }
 
+async function resetDatabase() {
+  if (
+    !confirm(
+      "Are you sure you want to reset all data back to the default seed state? This action cannot be undone.",
+    )
+  )
+    return;
+  const res = await apiPost("/reset", {});
+  if (res.success) {
+    showToast("Database reset successfully!", "success");
+    fetchStats();
+    fetchBooks();
+    fetchMembers();
+    fetchTransactions();
+  } else {
+    showToast(
+      res.message
+        ? formatErrorMessage(res.message)
+        : "Failed to reset database",
+      "error",
+    );
+  }
+}
+
 // === API Helpers ===
 async function apiGet(endpoint) {
   const res = await fetch(endpoint);

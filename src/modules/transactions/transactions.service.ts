@@ -60,4 +60,11 @@ export class TransactionsService {
       },
     };
   }
+
+  /**
+   * Reset data to default seed
+   */
+  reset(): void {
+    this.transactions = [];
+  }
 }

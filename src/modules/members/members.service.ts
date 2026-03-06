@@ -251,4 +251,12 @@ export class MembersService {
       suspended,
     };
   }
+
+  /**
+   * Reset data to default seed
+   */
+  reset(): void {
+    this.members = [...memberSeeds];
+    this.memberCounter = memberSeeds.length;
+  }
 }

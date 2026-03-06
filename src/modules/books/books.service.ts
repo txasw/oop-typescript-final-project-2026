@@ -436,4 +436,11 @@ export class BooksService {
       byCategory,
     };
   }
+
+  /**
+   * Reset data to default seed
+   */
+  reset(): void {
+    this.books = [...bookSeeds];
+  }
 }

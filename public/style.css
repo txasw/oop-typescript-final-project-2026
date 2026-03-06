@@ -442,11 +442,13 @@ i[data-lucide] {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   display: none;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 50;
   opacity: 0;
   transition: opacity 0.2s;
+  overflow-y: auto;
+  padding: 40px 20px;
 }
 .modal-backdrop.active {
   display: flex;
@@ -458,11 +460,11 @@ i[data-lucide] {
   box-shadow: var(--shadow-lg);
   width: 100%;
   max-width: 500px;
-  max-height: 90vh;
   display: flex;
   flex-direction: column;
   transform: scale(0.95);
   transition: transform 0.2s;
+  margin: auto;
 }
 .modal-backdrop.active .modal {
   transform: scale(1);
@@ -479,7 +481,7 @@ i[data-lucide] {
 }
 .modal-body {
   padding: 20px;
-  overflow-y: auto;
+  overflow: visible;
 }
 .btn-close {
   background: none;
