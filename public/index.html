@@ -202,16 +202,111 @@
               </div>
               <div class="form-group">
                 <label>Category</label>
-                <select id="bookCategory">
-                  <option value="FICTION">Fiction</option>
-                  <option value="NON_FICTION">Non-Fiction</option>
-                  <option value="SCIENCE">Science</option>
-                  <option value="TECHNOLOGY">Technology</option>
-                  <option value="HISTORY">History</option>
-                  <option value="ART">Art</option>
-                  <option value="EDUCATION">Education</option>
-                  <option value="OTHER">Other</option>
-                </select>
+                <div class="custom-select" id="custom-bookCategory">
+                  <input
+                    type="hidden"
+                    id="bookCategory"
+                    value="FICTION"
+                    required
+                  />
+                  <div
+                    class="select-trigger"
+                    onclick="toggleSelect('custom-bookCategory')"
+                  >
+                    <span class="select-label">Fiction</span>
+                    <i data-lucide="chevron-down"></i>
+                  </div>
+                  <div class="select-options">
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption(
+                          'custom-bookCategory',
+                          'FICTION',
+                          'Fiction',
+                        )
+                      "
+                    >
+                      Fiction
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption(
+                          'custom-bookCategory',
+                          'NON_FICTION',
+                          'Non-Fiction',
+                        )
+                      "
+                    >
+                      Non-Fiction
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption(
+                          'custom-bookCategory',
+                          'SCIENCE',
+                          'Science',
+                        )
+                      "
+                    >
+                      Science
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption(
+                          'custom-bookCategory',
+                          'TECHNOLOGY',
+                          'Technology',
+                        )
+                      "
+                    >
+                      Technology
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption(
+                          'custom-bookCategory',
+                          'HISTORY',
+                          'History',
+                        )
+                      "
+                    >
+                      History
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption('custom-bookCategory', 'ART', 'Art')
+                      "
+                    >
+                      Art
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption(
+                          'custom-bookCategory',
+                          'EDUCATION',
+                          'Education',
+                        )
+                      "
+                    >
+                      Education
+                    </div>
+                    <div
+                      class="select-option"
+                      onclick="
+                        selectOption('custom-bookCategory', 'OTHER', 'Other')
+                      "
+                    >
+                      Other
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="form-group">
@@ -302,9 +397,19 @@
           <p id="actionDescription" class="text-muted mb-4"></p>
           <div class="form-group">
             <label>Member</label>
-            <select id="actionMemberSelect" required class="w-full">
-              <!-- Populated dynamically -->
-            </select>
+            <div class="custom-select" id="custom-actionMemberSelect">
+              <input type="hidden" id="actionMemberSelect" required />
+              <div
+                class="select-trigger"
+                onclick="toggleSelect('custom-actionMemberSelect')"
+              >
+                <span class="select-label">-- Choose Member --</span>
+                <i data-lucide="chevron-down"></i>
+              </div>
+              <div class="select-options" id="actionMemberOptions">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
           </div>
           <div class="form-actions mt-4">
             <button

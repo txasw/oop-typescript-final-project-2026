@@ -64,7 +64,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Set polling for stats every 10 seconds
   setInterval(fetchStats, 10000);
+
+  // Close custom selects when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".custom-select")) {
+      document
+        .querySelectorAll(".custom-select")
+        .forEach((el) => el.classList.remove("active"));
+    }
+  });
 });
+
+// === Custom Select Logic ===
+function toggleSelect(id) {
+  const el = document.getElementById(id);
+  const isActive = el.classList.contains("active");
+  document
+    .querySelectorAll(".custom-select")
+    .forEach((s) => s.classList.remove("active"));
+  if (!isActive) el.classList.add("active");
+}
+
+function selectOption(wrapperId, value, label) {
+  const wrapper = document.getElementById(wrapperId);
+  wrapper.querySelector('input[type="hidden"]').value = value;
+  wrapper.querySelector(".select-label").textContent = label;
+  wrapper.classList.remove("active");
+}
 
 // === API Helpers ===
 async function apiGet(endpoint) {
@@ -326,6 +352,10 @@ function openBookModal() {
   document.getElementById("bookModalTitle").textContent = "Add New Book";
   document.getElementById("bookIsbn").value =
     "978-" + Math.floor(Math.random() * (9999999999 - 1000000000) + 1000000000);
+
+  // Reset custom category dropdown
+  selectOption("custom-bookCategory", "FICTION", "Fiction");
+
   openModal("bookModal");
 }
 
@@ -413,19 +443,23 @@ async function deleteMember(id) {
 
 // ACTIONS (Borrow/Return/Reserve)
 function updateActionMemberSelect() {
-  const select = document.getElementById("actionMemberSelect");
-  select.innerHTML = '<option value="">-- Choose Member --</option>';
+  const optionsContainer = document.getElementById("actionMemberOptions");
+  optionsContainer.innerHTML = "";
+
   _membersList
     .filter((m) => m.status === "ACTIVE")
     .forEach((m) => {
-      select.innerHTML += `<option value="${m.id}">${m.firstName} ${m.lastName} (${m.memberCode})</option>`;
+      const label = `${m.firstName} ${m.lastName} (${m.memberCode})`;
+      optionsContainer.innerHTML += `<div class="select-option" onclick="selectOption('custom-actionMemberSelect', '${m.id}', '${label}')">${label}</div>`;
     });
 }
 
 function openActionModal(bookId, actionType) {
   document.getElementById("actionBookId").value = bookId;
   document.getElementById("actionType").value = actionType;
-  document.getElementById("actionMemberSelect").value = "";
+
+  // Reset custom member dropdown
+  selectOption("custom-actionMemberSelect", "", "-- Choose Member --");
 
   const title = actionType === "borrow" ? "Borrow Book" : "Reserve Book";
   const desc =
@@ -519,8 +553,8 @@ function showToast(message, type = "info") {
   if (type === "warning") icon = "alert-triangle";
 
   toast.innerHTML = `
-      <i data-lucide="\${icon}"></i>
-      <div class="toast-message">\${message}</div>
+      <i data-lucide="${icon}"></i>
+      <div class="toast-message">${message}</div>
       <button class="btn-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>
   `;
 
