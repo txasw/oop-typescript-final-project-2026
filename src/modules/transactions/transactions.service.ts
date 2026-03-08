@@ -9,7 +9,7 @@ export class TransactionsService {
   private transactions: Transaction[] = [];
 
   /**
-   * บันทึก Transaction ใหม่
+   * Record a new Transaction
    */
   record(data: Omit<Transaction, "id" | "createdAt">): Transaction {
     const transaction: Transaction = {
@@ -22,7 +22,7 @@ export class TransactionsService {
   }
 
   /**
-   * ดึงรายการ Transactions ทั้งหมด พร้อม filter ตาม bookId/memberId
+   * Retrieve all Transactions with optional filter by bookId/memberId
    */
   findAll(
     paginationDto: PaginationDto,

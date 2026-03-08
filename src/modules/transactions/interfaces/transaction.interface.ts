@@ -1,40 +1,40 @@
 /**
- * Transaction Interface — บันทึกประวัติการยืม-คืนหนังสือ
+ * Transaction Interface — Records book borrow-return history
  */
 export interface Transaction {
-  /** UUID ของ Transaction */
+  /** Transaction UUID */
   id: string;
 
-  /** ID ของหนังสือ */
+  /** Book ID */
   bookId: string;
 
-  /** ชื่อหนังสือ (snapshot ณ เวลา borrow) */
+  /** Book Title (snapshot at borrow time) */
   bookTitle: string;
 
-  /** ID ของสมาชิก */
+  /** Member ID */
   memberId: string;
 
-  /** ชื่อสมาชิก (snapshot) */
+  /** Member Name (snapshot) */
   memberName: string;
 
-  /** ประเภท Action */
+  /** Action Type */
   action: "BORROW" | "RETURN";
 
-  /** วันที่ยืม */
+  /** Borrowed Date */
   borrowedAt: string;
 
-  /** วันครบกำหนดคืน */
+  /** Due Date */
   dueDate: string;
 
-  /** วันที่คืน (null ถ้ายังไม่คืน) */
+  /** Return Date (null if not yet returned) */
   returnedAt: string | null;
 
-  /** ค่าปรับ (บาท, 0 ถ้าไม่มี) */
+  /** Fine (THB, 0 if none) */
   fine: number;
 
-  /** จำนวนวันเลยกำหนด */
+  /** Overdue Days */
   overdueDays: number;
 
-  /** วันที่สร้าง record */
+  /** Record Created Date */
   createdAt: string;
 }
