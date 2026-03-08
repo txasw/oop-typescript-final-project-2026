@@ -1,28 +1,28 @@
 /**
- * หมวดหมู่ของหนังสือในระบบห้องสมุด
+ * Library Book Category
  */
 export enum BookCategory {
-  /** นิยาย / วรรณกรรม */
+  /** Fiction / Literature */
   FICTION = "FICTION",
 
-  /** สารคดี */
+  /** Documentary / Non-Fiction */
   NON_FICTION = "NON_FICTION",
 
-  /** วิทยาศาสตร์ */
+  /** Science */
   SCIENCE = "SCIENCE",
 
-  /** เทคโนโลยี */
+  /** Technology */
   TECHNOLOGY = "TECHNOLOGY",
 
-  /** ประวัติศาสตร์ */
+  /** History */
   HISTORY = "HISTORY",
 
-  /** ศิลปะ */
+  /** Art */
   ART = "ART",
 
-  /** การศึกษา */
+  /** Education */
   EDUCATION = "EDUCATION",
 
-  /** อื่นๆ */
+  /** Other */
   OTHER = "OTHER",
 }

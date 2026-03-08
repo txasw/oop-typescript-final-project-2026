@@ -1,13 +1,13 @@
 /**
- * สถานะของสมาชิกห้องสมุด
+ * Library Member Status
  */
 export enum MemberStatus {
-  /** สมาชิกใช้งานปกติ */
+  /** Active member */
   ACTIVE = "ACTIVE",
 
-  /** สมาชิกหยุดใช้งาน */
+  /** Inactive member */
   INACTIVE = "INACTIVE",
 
-  /** สมาชิกถูกระงับสิทธิ์ */
+  /** Suspended member */
   SUSPENDED = "SUSPENDED",
 }
