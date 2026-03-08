@@ -12,31 +12,31 @@ import {
 import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
- * DTO สำหรับสมัครสมาชิกใหม่ (POST /members)
+ * DTO สำหรับRegister a new member (POST /members)
  */
 export class CreateMemberDto {
-  @ApiProperty({ description: "ชื่อ", example: "สมชาย" })
+  @ApiProperty({ description: "First Name", example: "สมชาย" })
   @IsString()
   @IsNotEmpty()
   firstName!: string;
 
-  @ApiProperty({ description: "นามสกุล", example: "ใจดี" })
+  @ApiProperty({ description: "Last Name", example: "ใจดี" })
   @IsString()
   @IsNotEmpty()
   lastName!: string;
 
-  @ApiProperty({ description: "อีเมล", example: "somchai@example.com" })
+  @ApiProperty({ description: "Email", example: "somchai@example.com" })
   @IsEmail()
   @IsNotEmpty()
   email!: string;
 
-  @ApiProperty({ description: "เบอร์โทรศัพท์", example: "081-234-5678" })
+  @ApiProperty({ description: "Phone Number", example: "081-234-5678" })
   @IsString()
   @IsNotEmpty()
   phone!: string;
 
   @ApiProperty({
-    description: "ที่อยู่",
+    description: "Address",
     example: "123 ถ.สุขุมวิท กรุงเทพฯ 10110",
   })
   @IsString()
@@ -44,7 +44,7 @@ export class CreateMemberDto {
   address!: string;
 
   @ApiProperty({
-    description: "สถานะสมาชิก",
+    description: "Member Status",
     enum: MemberStatus,
     example: MemberStatus.ACTIVE,
     required: false,
@@ -55,7 +55,7 @@ export class CreateMemberDto {
   status?: MemberStatus;
 
   @ApiProperty({
-    description: "จำนวนหนังสือสูงสุดที่ยืมได้",
+    description: "Maximum books allowed",
     example: 5,
     required: false,
     default: 5,

@@ -27,7 +27,7 @@ import { PaginatedResponse } from "../../common/interfaces/paginated-response.in
 import { Member } from "./interfaces/member.interface";
 
 /**
- * MembersController — จัดการ endpoint สำหรับข้อมูลสมาชิก
+ * MembersController — Manages member endpoints
  */
 @ApiTags("members")
 @Controller("members")
@@ -35,13 +35,13 @@ export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
   /**
-   * GET /members — ดึงรายการสมาชิกทั้งหมด (รองรับ search, filter, pagination)
+   * GET /members — Retrieve all members (supports search, filter, pagination)
    */
   @Get()
   @ApiOperation({
-    summary: "ดึงรายการสมาชิกทั้งหมด (รองรับ search, filter, pagination)",
+    summary: "Retrieve all members (supports search, filter, pagination)",
   })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  @SwaggerResponse({ status: 200, description: "Success" })
   findAll(
     @Query() queryDto: QueryMemberDto,
   ): ApiResponse<PaginatedResponse<Member>> {
@@ -54,11 +54,11 @@ export class MembersController {
   }
 
   /**
-   * GET /members/stats — ดึงสถิติสมาชิก
+   * GET /members/stats — Retrieve member statistics
    */
   @Get("stats")
-  @ApiOperation({ summary: "ดึงสถิติสมาชิก" })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  @ApiOperation({ summary: "Retrieve member statistics" })
+  @SwaggerResponse({ status: 200, description: "Success" })
   getStats(): ApiResponse<Record<string, unknown>> {
     const stats = this.membersService.getStats();
     return {
@@ -69,13 +69,13 @@ export class MembersController {
   }
 
   /**
-   * GET /members/:id — ดึงสมาชิกตาม ID
+   * GET /members/:id — Retrieve member by ID
    */
   @Get(":id")
-  @ApiOperation({ summary: "ดึงสมาชิกตาม ID" })
-  @ApiParam({ name: "id", description: "UUID ของสมาชิก" })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบสมาชิก" })
+  @ApiOperation({ summary: "Retrieve member by ID" })
+  @ApiParam({ name: "id", description: "Member UUID" })
+  @SwaggerResponse({ status: 200, description: "Success" })
+  @SwaggerResponse({ status: 404, description: "Member not found" })
   findOne(@Param("id") id: string): ApiResponse<Member> {
     const member = this.membersService.findOne(id);
     return {
@@ -86,13 +86,13 @@ export class MembersController {
   }
 
   /**
-   * POST /members — สมัครสมาชิกใหม่
+   * POST /members — Register a new member
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: "สมัครสมาชิกใหม่" })
-  @SwaggerResponse({ status: 201, description: "สมัครสมาชิกสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ข้อมูลไม่ถูกต้อง" })
+  @ApiOperation({ summary: "Register a new member" })
+  @SwaggerResponse({ status: 201, description: "สมัครสมาชิกSuccess" })
+  @SwaggerResponse({ status: 400, description: "Invalid data" })
   create(@Body() createMemberDto: CreateMemberDto): ApiResponse<Member> {
     const member = this.membersService.create(createMemberDto);
     return {
@@ -103,14 +103,14 @@ export class MembersController {
   }
 
   /**
-   * PUT /members/:id — อัปเดตข้อมูลสมาชิกทั้งหมด
+   * PUT /members/:id — Update all member info
    */
   @Put(":id")
-  @ApiOperation({ summary: "อัปเดตข้อมูลสมาชิกทั้งหมด (full update)" })
-  @ApiParam({ name: "id", description: "UUID ของสมาชิก" })
-  @SwaggerResponse({ status: 200, description: "อัปเดตสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ข้อมูลไม่ถูกต้อง" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบสมาชิก" })
+  @ApiOperation({ summary: "Update all member info (full update)" })
+  @ApiParam({ name: "id", description: "Member UUID" })
+  @SwaggerResponse({ status: 200, description: "อัปเดตSuccess" })
+  @SwaggerResponse({ status: 400, description: "Invalid data" })
+  @SwaggerResponse({ status: 404, description: "Member not found" })
   update(
     @Param("id") id: string,
     @Body() updateMemberDto: UpdateMemberDto,
@@ -124,14 +124,14 @@ export class MembersController {
   }
 
   /**
-   * PATCH /members/:id — อัปเดตข้อมูลสมาชิกบางส่วน
+   * PATCH /members/:id — Update partial member info
    */
   @Patch(":id")
-  @ApiOperation({ summary: "อัปเดตข้อมูลสมาชิกบางส่วน (partial update)" })
-  @ApiParam({ name: "id", description: "UUID ของสมาชิก" })
-  @SwaggerResponse({ status: 200, description: "อัปเดตสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ข้อมูลไม่ถูกต้อง" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบสมาชิก" })
+  @ApiOperation({ summary: "Update partial member info (partial update)" })
+  @ApiParam({ name: "id", description: "Member UUID" })
+  @SwaggerResponse({ status: 200, description: "อัปเดตSuccess" })
+  @SwaggerResponse({ status: 400, description: "Invalid data" })
+  @SwaggerResponse({ status: 404, description: "Member not found" })
   patch(
     @Param("id") id: string,
     @Body() patchMemberDto: PatchMemberDto,
@@ -145,13 +145,13 @@ export class MembersController {
   }
 
   /**
-   * DELETE /members/:id — ลบสมาชิก
+   * DELETE /members/:id — Delete a member
    */
   @Delete(":id")
-  @ApiOperation({ summary: "ลบสมาชิกตาม ID" })
-  @ApiParam({ name: "id", description: "UUID ของสมาชิก" })
-  @SwaggerResponse({ status: 200, description: "ลบสำเร็จ" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบสมาชิก" })
+  @ApiOperation({ summary: "Delete member by ID" })
+  @ApiParam({ name: "id", description: "Member UUID" })
+  @SwaggerResponse({ status: 200, description: "ลบSuccess" })
+  @SwaggerResponse({ status: 404, description: "Member not found" })
   remove(@Param("id") id: string): ApiResponse<Member> {
     const member = this.membersService.remove(id);
     return {

@@ -1,46 +1,46 @@
 import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
- * Member Interface — โครงสร้างข้อมูลสมาชิกห้องสมุด
+ * Member Interface — Member data structure
  * มี Attribute ≥ 10 ตัว ตามข้อกำหนด
  */
 export interface Member {
-  /** UUID ของสมาชิก */
+  /** Member UUID */
   id: string;
 
   /** รหัสสมาชิก (เช่น LIB-0001) */
   memberCode: string;
 
-  /** ชื่อ */
+  /** First Name */
   firstName: string;
 
-  /** นามสกุล */
+  /** Last Name */
   lastName: string;
 
-  /** อีเมล */
+  /** Email */
   email: string;
 
-  /** เบอร์โทรศัพท์ */
+  /** Phone Number */
   phone: string;
 
-  /** ที่อยู่ */
+  /** Address */
   address: string;
 
-  /** สถานะสมาชิก (enum) */
+  /** Member Status (enum) */
   status: MemberStatus;
 
-  /** จำนวนหนังสือสูงสุดที่ยืมได้ */
+  /** Maximum books allowed */
   maxBooksAllowed: number;
 
   /** รายการ Book IDs ที่ยืมอยู่ */
   borrowedBookIds: string[];
 
-  /** วันที่ลบ (null ถ้ายังไม่ถูกลบ) */
+  /** Deleted date (null if not deleted) */
   deletedAt: string | null;
 
-  /** วันที่สมัครสมาชิก */
+  /** Registration Dateสมาชิก */
   registeredAt: string;
 
-  /** วันที่อัปเดตล่าสุด */
+  /** Last updated date */
   updatedAt: string;
 }
