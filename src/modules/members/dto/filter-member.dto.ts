@@ -7,7 +7,7 @@ import { MemberStatus } from "../../../common/enums/member-status.enum";
  */
 export class FilterMemberDto {
   @ApiPropertyOptional({
-    description: "กรองตามMember Status",
+    description: "Filter by Member Status",
     enum: MemberStatus,
   })
   @IsOptional()

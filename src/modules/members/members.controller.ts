@@ -91,7 +91,7 @@ export class MembersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Register a new member" })
-  @SwaggerResponse({ status: 201, description: "สมัครสมาชิกSuccess" })
+  @SwaggerResponse({ status: 201, description: "Successfully registered member" })
   @SwaggerResponse({ status: 400, description: "Invalid data" })
   create(@Body() createMemberDto: CreateMemberDto): ApiResponse<Member> {
     const member = this.membersService.create(createMemberDto);
@@ -108,7 +108,7 @@ export class MembersController {
   @Put(":id")
   @ApiOperation({ summary: "Update all member info (full update)" })
   @ApiParam({ name: "id", description: "Member UUID" })
-  @SwaggerResponse({ status: 200, description: "อัปเดตSuccess" })
+  @SwaggerResponse({ status: 200, description: "Successfully updated" })
   @SwaggerResponse({ status: 400, description: "Invalid data" })
   @SwaggerResponse({ status: 404, description: "Member not found" })
   update(
@@ -129,7 +129,7 @@ export class MembersController {
   @Patch(":id")
   @ApiOperation({ summary: "Update partial member info (partial update)" })
   @ApiParam({ name: "id", description: "Member UUID" })
-  @SwaggerResponse({ status: 200, description: "อัปเดตSuccess" })
+  @SwaggerResponse({ status: 200, description: "Successfully updated" })
   @SwaggerResponse({ status: 400, description: "Invalid data" })
   @SwaggerResponse({ status: 404, description: "Member not found" })
   patch(
@@ -150,7 +150,7 @@ export class MembersController {
   @Delete(":id")
   @ApiOperation({ summary: "Delete member by ID" })
   @ApiParam({ name: "id", description: "Member UUID" })
-  @SwaggerResponse({ status: 200, description: "ลบSuccess" })
+  @SwaggerResponse({ status: 200, description: "Successfully deleted" })
   @SwaggerResponse({ status: 404, description: "Member not found" })
   remove(@Param("id") id: string): ApiResponse<Member> {
     const member = this.membersService.remove(id);

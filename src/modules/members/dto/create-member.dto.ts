@@ -12,15 +12,15 @@ import {
 import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
- * DTO สำหรับRegister a new member (POST /members)
+ * DTO for registering a new member (POST /members)
  */
 export class CreateMemberDto {
-  @ApiProperty({ description: "First Name", example: "สมชาย" })
+  @ApiProperty({ description: "First Name", example: "Somchai" })
   @IsString()
   @IsNotEmpty()
   firstName!: string;
 
-  @ApiProperty({ description: "Last Name", example: "ใจดี" })
+  @ApiProperty({ description: "Last Name", example: "Jaidee" })
   @IsString()
   @IsNotEmpty()
   lastName!: string;
@@ -37,7 +37,7 @@ export class CreateMemberDto {
 
   @ApiProperty({
     description: "Address",
-    example: "123 ถ.สุขุมวิท กรุงเทพฯ 10110",
+    example: "123 Sukhumvit Rd., Bangkok 10110",
   })
   @IsString()
   @IsNotEmpty()

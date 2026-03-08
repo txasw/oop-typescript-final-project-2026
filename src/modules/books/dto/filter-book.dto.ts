@@ -7,7 +7,7 @@ import { BookCategory } from "../../../common/enums/book-category.enum";
  * DTO for filtering books
  */
 export class FilterBookDto {
-  @ApiPropertyOptional({ description: "กรองตามCategory", enum: BookCategory })
+  @ApiPropertyOptional({ description: "Filter by Category", enum: BookCategory })
   @IsOptional()
   @IsEnum(BookCategory)
   category?: BookCategory;

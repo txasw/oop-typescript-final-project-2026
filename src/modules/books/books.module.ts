@@ -5,7 +5,7 @@ import { MembersModule } from "../members/members.module";
 import { TransactionsModule } from "../transactions/transactions.module";
 
 /**
- * BooksModule — จัดการ dependency injection สำหรับ Book feature
+ * BooksModule — Manages dependency injection for Book feature
  */
 @Module({
   imports: [

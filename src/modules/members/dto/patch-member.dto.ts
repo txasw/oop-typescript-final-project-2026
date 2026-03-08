@@ -16,13 +16,13 @@ import { MemberStatus } from "../../../common/enums/member-status.enum";
  * All fields are optional
  */
 export class PatchMemberDto {
-  @ApiPropertyOptional({ description: "First Name", example: "สมชาย" })
+  @ApiPropertyOptional({ description: "First Name", example: "Somchai" })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   firstName?: string;
 
-  @ApiPropertyOptional({ description: "Last Name", example: "ใจดี" })
+  @ApiPropertyOptional({ description: "Last Name", example: "Jaidee" })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
@@ -44,7 +44,7 @@ export class PatchMemberDto {
 
   @ApiPropertyOptional({
     description: "Address",
-    example: "123 ถ.สุขุมวิท กรุงเทพฯ 10110",
+    example: "123 Sukhumvit Rd., Bangkok 10110",
   })
   @IsString()
   @IsNotEmpty()

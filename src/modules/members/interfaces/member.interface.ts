@@ -2,13 +2,13 @@ import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
  * Member Interface — Member data structure
- * มี Attribute ≥ 10 ตัว ตามข้อกำหนด
+ * Has >= 10 attributes according to requirements
  */
 export interface Member {
   /** Member UUID */
   id: string;
 
-  /** รหัสสมาชิก (เช่น LIB-0001) */
+  /** Member Code (e.g., LIB-0001) */
   memberCode: string;
 
   /** First Name */
@@ -32,13 +32,13 @@ export interface Member {
   /** Maximum books allowed */
   maxBooksAllowed: number;
 
-  /** รายการ Book IDs ที่ยืมอยู่ */
+  /** List of currently borrowed Book IDs */
   borrowedBookIds: string[];
 
   /** Deleted date (null if not deleted) */
   deletedAt: string | null;
 
-  /** Registration Dateสมาชิก */
+  /** Member Registration Date */
   registeredAt: string;
 
   /** Last updated date */

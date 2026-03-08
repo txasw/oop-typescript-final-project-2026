@@ -74,7 +74,7 @@ export class MembersService {
 
   /**
    * Retrieve member by ID
-   * @throws NotFoundException ถ้าMember not found
+   * @throws NotFoundException if Member not found
    */
   findOne(id: string): Member {
     const member = this.members.find(
@@ -112,7 +112,7 @@ export class MembersService {
 
   /**
    * Update all member info (PUT)
-   * @throws NotFoundException ถ้าMember not found
+   * @throws NotFoundException if Member not found
    */
   update(id: string, updateMemberDto: UpdateMemberDto): Member {
     const memberIndex = this.members.findIndex((m) => m.id === id);
@@ -143,7 +143,7 @@ export class MembersService {
 
   /**
    * Update partial member info (PATCH)
-   * @throws NotFoundException ถ้าMember not found
+   * @throws NotFoundException if Member not found
    */
   patch(id: string, patchMemberDto: PatchMemberDto): Member {
     const memberIndex = this.members.findIndex((m) => m.id === id);
@@ -184,7 +184,7 @@ export class MembersService {
 
   /**
    * Delete member by ID
-   * @throws NotFoundException ถ้าMember not found
+   * @throws NotFoundException if Member not found
    */
   remove(id: string): Member {
     const member = this.findOne(id);
