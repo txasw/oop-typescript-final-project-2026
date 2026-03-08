@@ -28,7 +28,7 @@ import { PaginatedResponse } from "../../common/interfaces/paginated-response.in
 import { Book } from "./interfaces/book.interface";
 
 /**
- * BooksController — จัดการ endpoint สำหรับข้อมูลหนังสือ
+ * BooksController — Manage endpoints for book data
  */
 @ApiTags("books")
 @Controller("books")
@@ -36,13 +36,13 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   /**
-   * GET /books — ดึงรายการหนังสือทั้งหมด (รองรับ search, filter, pagination)
+   * GET /books — Retrieve all books (supports search, filter, pagination)
    */
   @Get()
   @ApiOperation({
-    summary: "ดึงรายการหนังสือทั้งหมด (รองรับ search, filter, pagination)",
+    summary: "Retrieve all books (supports search, filter, pagination)",
   })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  @SwaggerResponse({ status: 200, description: "Success" })
   findAll(
     @Query() queryDto: QueryBookDto,
   ): ApiResponse<PaginatedResponse<Book>> {
@@ -55,11 +55,11 @@ export class BooksController {
   }
 
   /**
-   * GET /books/stats — ดึงสถิติหนังสือ
+   * GET /books/stats — Retrieve book statistics
    */
   @Get("stats")
-  @ApiOperation({ summary: "ดึงสถิติหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  @ApiOperation({ summary: "Retrieve book statistics" })
+  @SwaggerResponse({ status: 200, description: "Success" })
   getStats(): ApiResponse<Record<string, unknown>> {
     const stats = this.booksService.getStats();
     return {
@@ -70,13 +70,13 @@ export class BooksController {
   }
 
   /**
-   * GET /books/:id — ดึงหนังสือตาม ID
+   * GET /books/:id — Retrieve a book by ID
    */
   @Get(":id")
-  @ApiOperation({ summary: "ดึงหนังสือตาม ID" })
-  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  @ApiOperation({ summary: "Retrieve a book by ID" })
+  @ApiParam({ name: "id", description: "Book UUID" })
+  @SwaggerResponse({ status: 200, description: "Success" })
+  @SwaggerResponse({ status: 404, description: "Book not found" })
   findOne(@Param("id") id: string): ApiResponse<Book> {
     const book = this.booksService.findOne(id);
     return {
@@ -87,13 +87,13 @@ export class BooksController {
   }
 
   /**
-   * POST /books — สร้างหนังสือใหม่
+   * POST /books — Create a new book
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: "สร้างหนังสือใหม่" })
-  @SwaggerResponse({ status: 201, description: "สร้างหนังสือสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ข้อมูลไม่ถูกต้อง" })
+  @ApiOperation({ summary: "Create a new book" })
+  @SwaggerResponse({ status: 201, description: "Successfully created book" })
+  @SwaggerResponse({ status: 400, description: "Invalid data" })
   create(@Body() createBookDto: CreateBookDto): ApiResponse<Book> {
     const book = this.booksService.create(createBookDto);
     return {
@@ -104,14 +104,14 @@ export class BooksController {
   }
 
   /**
-   * PUT /books/:id — อัปเดตข้อมูลหนังสือทั้งหมด
+   * PUT /books/:id — Update all book information
    */
   @Put(":id")
-  @ApiOperation({ summary: "อัปเดตข้อมูลหนังสือทั้งหมด (full update)" })
-  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "อัปเดตสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ข้อมูลไม่ถูกต้อง" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  @ApiOperation({ summary: "Update all book information (full update)" })
+  @ApiParam({ name: "id", description: "Book UUID" })
+  @SwaggerResponse({ status: 200, description: "Successfully updated" })
+  @SwaggerResponse({ status: 400, description: "Invalid data" })
+  @SwaggerResponse({ status: 404, description: "Book not found" })
   update(
     @Param("id") id: string,
     @Body() updateBookDto: UpdateBookDto,
@@ -125,14 +125,14 @@ export class BooksController {
   }
 
   /**
-   * PATCH /books/:id — อัปเดตข้อมูลหนังสือบางส่วน
+   * PATCH /books/:id — Update partial book information
    */
   @Patch(":id")
-  @ApiOperation({ summary: "อัปเดตข้อมูลหนังสือบางส่วน (partial update)" })
-  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "อัปเดตสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ข้อมูลไม่ถูกต้อง" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  @ApiOperation({ summary: "Update partial book information (partial update)" })
+  @ApiParam({ name: "id", description: "Book UUID" })
+  @SwaggerResponse({ status: 200, description: "Successfully updated" })
+  @SwaggerResponse({ status: 400, description: "Invalid data" })
+  @SwaggerResponse({ status: 404, description: "Book not found" })
   patch(
     @Param("id") id: string,
     @Body() patchBookDto: PatchBookDto,
@@ -146,13 +146,13 @@ export class BooksController {
   }
 
   /**
-   * DELETE /books/:id — ลบหนังสือ
+   * DELETE /books/:id — Delete a book
    */
   @Delete(":id")
-  @ApiOperation({ summary: "ลบหนังสือตาม ID" })
-  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "ลบสำเร็จ" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  @ApiOperation({ summary: "Delete a book by ID" })
+  @ApiParam({ name: "id", description: "Book UUID" })
+  @SwaggerResponse({ status: 200, description: "Successfully deleted" })
+  @SwaggerResponse({ status: 404, description: "Book not found" })
   remove(@Param("id") id: string): ApiResponse<Book> {
     const book = this.booksService.remove(id);
     return {
@@ -163,15 +163,15 @@ export class BooksController {
   }
 
   /**
-   * POST /books/:id/borrow — ยืมหนังสือ
+   * POST /books/:id/borrow — Borrow a book
    */
   @Post(":id/borrow")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "ยืมหนังสือ" })
-  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "ยืมหนังสือสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "หนังสือไม่พร้อมให้ยืม" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือหรือสมาชิก" })
+  @ApiOperation({ summary: "Borrow a book" })
+  @ApiParam({ name: "id", description: "Book UUID" })
+  @SwaggerResponse({ status: 200, description: "Successfully borrowed book" })
+  @SwaggerResponse({ status: 400, description: "Book not available for loan" })
+  @SwaggerResponse({ status: 404, description: "Book or member not found" })
   borrow(
     @Param("id") id: string,
     @Body() borrowBookDto: BorrowBookDto,
@@ -185,15 +185,15 @@ export class BooksController {
   }
 
   /**
-   * POST /books/:id/return — คืนหนังสือ
+   * POST /books/:id/return — Return a book
    */
   @Post(":id/return")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "คืนหนังสือ" })
-  @ApiParam({ name: "id", description: "UUID ของหนังสือ" })
-  @SwaggerResponse({ status: 200, description: "คืนหนังสือสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "หนังสือไม่ได้ถูกยืม" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  @ApiOperation({ summary: "Return a book" })
+  @ApiParam({ name: "id", description: "Book UUID" })
+  @SwaggerResponse({ status: 200, description: "Successfully returned book" })
+  @SwaggerResponse({ status: 400, description: "Book is not borrowed" })
+  @SwaggerResponse({ status: 404, description: "Book not found" })
   returnBook(@Param("id") id: string): ApiResponse<Record<string, unknown>> {
     const result = this.booksService.returnBook(id);
     const message =
@@ -208,16 +208,16 @@ export class BooksController {
   }
 
   /**
-   * POST /books/:id/reserve — จองหนังสือเข้าคิวรอ
+   * POST /books/:id/reserve — Reserve a book into queue
    */
   @Post(":id/reserve")
   @ApiOperation({
-    summary: "จองหนังสือเข้าคิวรอ (ต้องเป็นหนังสือที่ถูกยืมอยู่)",
+    summary: "Reserve a book into queue (must be borrowed)",
   })
   @ApiParam({ name: "id", description: "Book ID" })
-  @SwaggerResponse({ status: 200, description: "จองสำเร็จ" })
-  @SwaggerResponse({ status: 400, description: "ไม่สามารถจองได้" })
-  @SwaggerResponse({ status: 404, description: "ไม่พบหนังสือ" })
+  @SwaggerResponse({ status: 200, description: "Successfully reserved" })
+  @SwaggerResponse({ status: 400, description: "Cannot reserve" })
+  @SwaggerResponse({ status: 404, description: "Book not found" })
   reserve(
     @Param("id") id: string,
     @Body() borrowBookDto: BorrowBookDto,

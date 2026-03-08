@@ -6,7 +6,7 @@ import { IsString, IsNotEmpty } from "class-validator";
  */
 export class BorrowBookDto {
   @ApiProperty({
-    description: "UUID ของสมาชิกที่ต้องการยืม",
+    description: "UUID of borrowing member",
     example: "uuid-of-member",
   })
   @IsString()

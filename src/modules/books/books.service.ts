@@ -21,7 +21,7 @@ import { TransactionsService } from "../transactions/transactions.service";
 import { bookSeeds } from "./data/book-seeds";
 
 /**
- * BooksService — จัดการข้อมูลหนังสือแบบ in-memory
+ * BooksService — Manages in-memory book data
  */
 @Injectable()
 export class BooksService {
@@ -35,7 +35,7 @@ export class BooksService {
   private books: Book[] = [...bookSeeds];
 
   /**
-   * ดึงรายการหนังสือทั้งหมด พร้อม search, filter, pagination (กรองข้อมูลที่ถูก soft delete ออก)
+   * Retrieve all books with search, filter, pagination (exclude soft deleted)
    */
   findAll(
     paginationDto: PaginationDto,
@@ -86,8 +86,8 @@ export class BooksService {
   }
 
   /**
-   * ดึงหนังสือตาม ID
-   * @throws NotFoundException ถ้าไม่พบหนังสือ
+   * Retrieve book by ID
+   * @throws NotFoundException If book not found
    */
   findOne(id: string): Book {
     const book = this.books.find((b) => b.id === id && b.deletedAt === null);
@@ -98,7 +98,7 @@ export class BooksService {
   }
 
   /**
-   * สร้างหนังสือใหม่
+   * Create a new book
    */
   create(createBookDto: CreateBookDto): Book {
     const now = new Date().toISOString();
@@ -126,8 +126,8 @@ export class BooksService {
   }
 
   /**
-   * อัปเดตข้อมูลหนังสือทั้งหมด (PUT)
-   * @throws NotFoundException ถ้าไม่พบหนังสือ
+   * Update all book information (PUT)
+   * @throws NotFoundException If book not found
    */
   update(id: string, updateBookDto: UpdateBookDto): Book {
     const bookIndex = this.books.findIndex((b) => b.id === id);
@@ -161,8 +161,8 @@ export class BooksService {
   }
 
   /**
-   * อัปเดตข้อมูลหนังสือบางส่วน (PATCH)
-   * @throws NotFoundException ถ้าไม่พบหนังสือ
+   * Update partial book information (PATCH)
+   * @throws NotFoundException If book not found
    */
   patch(id: string, patchBookDto: PatchBookDto): Book {
     const bookIndex = this.books.findIndex((b) => b.id === id);
@@ -200,8 +200,8 @@ export class BooksService {
   }
 
   /**
-   * ลบหนังสือตาม ID
-   * @throws NotFoundException ถ้าไม่พบหนังสือ
+   * Delete book by ID
+   * @throws NotFoundException If book not found
    */
   remove(id: string): Book {
     const book = this.findOne(id);
@@ -215,9 +215,9 @@ export class BooksService {
   }
 
   /**
-   * ยืมหนังสือ
-   * @throws NotFoundException ถ้าไม่พบหนังสือหรือสมาชิก
-   * @throws BadRequestException ถ้าหนังสือไม่พร้อมให้ยืมหรือสมาชิกยืมเต็มโคต้า
+   * Borrow a book
+   * @throws NotFoundException If book or member not found
+   * @throws BadRequestException If book not available or quota exceeded
    */
   borrow(bookId: string, memberId: string): Book {
     const book = this.findOne(bookId);
@@ -292,9 +292,9 @@ export class BooksService {
   }
 
   /**
-   * คืนหนังสือ — คำนวณค่าปรับถ้าเลยกำหนด (10 บาท/วัน)
-   * @throws NotFoundException ถ้าไม่พบหนังสือ
-   * @throws BadRequestException ถ้าหนังสือไม่ได้ถูกยืม
+   * Return a book — Calculate fines if overdue (10 THB/day)
+   * @throws NotFoundException If book not found
+   * @throws BadRequestException If book is not borrowed
    */
   returnBook(bookId: string): {
     book: Book;
@@ -374,9 +374,9 @@ export class BooksService {
   }
 
   /**
-   * จองหนังสือที่ถูกยืมอยู่ — เพิ่มสมาชิกเข้าคิวรอ
-   * @throws NotFoundException ถ้าไม่พบหนังสือหรือสมาชิก
-   * @throws BadRequestException ถ้าหนังสือไม่ได้ถูกยืม หรือสมาชิกจองอยู่แล้ว
+   * Reserve a borrowed book — Add member to waitlist queue
+   * @throws NotFoundException If book or member not found
+   * @throws BadRequestException If book not borrowed or member already reserved
    */
   reserve(bookId: string, memberId: string): Book {
     const book = this.findOne(bookId);
@@ -425,7 +425,7 @@ export class BooksService {
   }
 
   /**
-   * ดึงสถิติหนังสือ
+   * Retrieve book statistics
    */
   getStats() {
     const activeBooks = this.books.filter((b) => !b.deletedAt);
