@@ -16,13 +16,13 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   /**
-   * GET /transactions — ดึงประวัติการยืม-คืนทั้งหมด (รองรับ filter ตาม bookId/memberId)
+   * GET /transactions — Retrieve all borrow-return history (supports filter by bookId/memberId)
    */
   @Get()
   @ApiOperation({
-    summary: "ดึงประวัติการยืม-คืนทั้งหมด (รองรับ filter ตาม bookId/memberId)",
+    summary: "Retrieve all borrow-return history (supports filter by bookId/memberId)",
   })
-  @SwaggerResponse({ status: 200, description: "สำเร็จ" })
+  @SwaggerResponse({ status: 200, description: "Success" })
   findAll(
     @Query() queryDto: QueryTransactionDto,
   ): ApiResponse<PaginatedResponse<Transaction>> {

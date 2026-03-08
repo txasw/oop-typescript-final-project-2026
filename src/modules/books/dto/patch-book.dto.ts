@@ -13,12 +13,12 @@ import { BookStatus } from "../../../common/enums/book-status.enum";
 import { BookCategory } from "../../../common/enums/book-category.enum";
 
 /**
- * DTO สำหรับอัปเดตข้อมูลหนังสือบางส่วน (PATCH /books/:id)
- * ทุก field เป็น optional
+ * DTO for partial book update (PATCH /books/:id)
+ * All fields are optional
  */
 export class PatchBookDto {
   @ApiPropertyOptional({
-    description: "รหัส ISBN",
+    description: "ISBN Code",
     example: "978-616-123-456-7",
   })
   @IsString()
@@ -27,7 +27,7 @@ export class PatchBookDto {
   isbn?: string;
 
   @ApiPropertyOptional({
-    description: "ชื่อหนังสือ",
+    description: "Book Title",
     example: "TypeScript Design Patterns",
   })
   @IsString()
@@ -35,14 +35,14 @@ export class PatchBookDto {
   @IsOptional()
   title?: string;
 
-  @ApiPropertyOptional({ description: "ผู้แต่ง", example: "John Doe" })
+  @ApiPropertyOptional({ description: "Author", example: "John Doe" })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   author?: string;
 
   @ApiPropertyOptional({
-    description: "สำนักพิมพ์",
+    description: "Publisher",
     example: "Tech Publishing",
   })
   @IsString()
@@ -50,7 +50,7 @@ export class PatchBookDto {
   @IsOptional()
   publisher?: string;
 
-  @ApiPropertyOptional({ description: "ปีที่พิมพ์", example: 2024 })
+  @ApiPropertyOptional({ description: "Published Year", example: 2024 })
   @IsNumber()
   @Min(1000)
   @Max(2100)
@@ -58,7 +58,7 @@ export class PatchBookDto {
   publishedYear?: number;
 
   @ApiPropertyOptional({
-    description: "หมวดหมู่",
+    description: "Category",
     enum: BookCategory,
     example: BookCategory.TECHNOLOGY,
   })
@@ -67,7 +67,7 @@ export class PatchBookDto {
   category?: BookCategory;
 
   @ApiPropertyOptional({
-    description: "รายละเอียด / เรื่องย่อ",
+    description: "Description / Synopsis",
     example: "Updated description",
   })
   @IsString()
@@ -76,7 +76,7 @@ export class PatchBookDto {
   description?: string;
 
   @ApiPropertyOptional({
-    description: "สถานะของหนังสือ",
+    description: "Book status",
     enum: BookStatus,
     example: BookStatus.AVAILABLE,
   })
@@ -84,7 +84,7 @@ export class PatchBookDto {
   @IsOptional()
   status?: BookStatus;
 
-  @ApiPropertyOptional({ description: "อนุญาตให้ยืมได้หรือไม่", example: true })
+  @ApiPropertyOptional({ description: "Available for loan", example: true })
   @IsBoolean()
   @IsOptional()
   isAvailableForLoan?: boolean;

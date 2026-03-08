@@ -12,29 +12,29 @@ import {
 import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
- * DTO สำหรับอัปเดตข้อมูลสมาชิกบางส่วน (PATCH /members/:id)
- * ทุก field เป็น optional
+ * DTO for partial member update (PATCH /members/:id)
+ * All fields are optional
  */
 export class PatchMemberDto {
-  @ApiPropertyOptional({ description: "ชื่อ", example: "สมชาย" })
+  @ApiPropertyOptional({ description: "First Name", example: "Somchai" })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   firstName?: string;
 
-  @ApiPropertyOptional({ description: "นามสกุล", example: "ใจดี" })
+  @ApiPropertyOptional({ description: "Last Name", example: "Jaidee" })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   lastName?: string;
 
-  @ApiPropertyOptional({ description: "อีเมล", example: "somchai@example.com" })
+  @ApiPropertyOptional({ description: "Email", example: "somchai@example.com" })
   @IsEmail()
   @IsOptional()
   email?: string;
 
   @ApiPropertyOptional({
-    description: "เบอร์โทรศัพท์",
+    description: "Phone Number",
     example: "081-234-5678",
   })
   @IsString()
@@ -43,8 +43,8 @@ export class PatchMemberDto {
   phone?: string;
 
   @ApiPropertyOptional({
-    description: "ที่อยู่",
-    example: "123 ถ.สุขุมวิท กรุงเทพฯ 10110",
+    description: "Address",
+    example: "123 Sukhumvit Rd., Bangkok 10110",
   })
   @IsString()
   @IsNotEmpty()
@@ -52,7 +52,7 @@ export class PatchMemberDto {
   address?: string;
 
   @ApiPropertyOptional({
-    description: "สถานะสมาชิก",
+    description: "Member Status",
     enum: MemberStatus,
     example: MemberStatus.ACTIVE,
   })
@@ -61,7 +61,7 @@ export class PatchMemberDto {
   status?: MemberStatus;
 
   @ApiPropertyOptional({
-    description: "จำนวนหนังสือสูงสุดที่ยืมได้",
+    description: "Maximum books allowed",
     example: 5,
   })
   @IsNumber()

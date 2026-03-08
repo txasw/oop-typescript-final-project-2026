@@ -242,12 +242,11 @@ Unit tests cover `BooksService` and `MembersService` with isolated dependency in
 
 ## Documentation
 
-| Document             | Path                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| API Specification    | [docs/api-specification.md](docs/api-specification.md)       |
-| Data Model           | [docs/data-model.md](docs/data-model.md)                     |
-| UML Diagram          | [docs/uml-diagram.png](docs/uml-diagram.png)                 |
-| Submission Checklist | [docs/submission-checklist.md](docs/submission-checklist.md) |
+| Document          | Path                                                   |
+| ----------------- | ------------------------------------------------------ |
+| API Specification | [docs/api-specification.md](docs/api-specification.md) |
+| Data Model        | [docs/data-model.md](docs/data-model.md)               |
+| UML Diagram       | [docs/uml-diagram.png](docs/uml-diagram.png)           |
 
 ---
 

@@ -3,11 +3,11 @@ import { IsOptional, IsEnum } from "class-validator";
 import { MemberStatus } from "../../../common/enums/member-status.enum";
 
 /**
- * DTO สำหรับ filter สมาชิก
+ * DTO for filtering members
  */
 export class FilterMemberDto {
   @ApiPropertyOptional({
-    description: "กรองตามสถานะสมาชิก",
+    description: "Filter by Member Status",
     enum: MemberStatus,
   })
   @IsOptional()

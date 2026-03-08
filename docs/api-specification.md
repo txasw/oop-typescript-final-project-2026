@@ -14,7 +14,7 @@ http://localhost:3000/api
 
 ## Standard Response Format
 
-ทุก API ใช้ Response format เดียวกัน:
+All APIs use the same Response format:
 
 ```typescript
 interface ApiResponse<T> {
@@ -30,14 +30,14 @@ interface ApiResponse<T> {
 
 ### GET /books
 
-ดึงรายการหนังสือทั้งหมด (รองรับ ค้นหา, กรอง และ แบ่งหน้า)
+Retrieve all books (supports search, filter, and pagination)
 
 - **Query Parameters:**
   - `page` (number, default: 1)
   - `limit` (number, default: 10)
-  - `search` (string) — ค้นหาจาก title, author, หรือ isbn
-  - `category` (string) — กรองตามหมวดหมู่
-  - `status` (string) — กรองตามสถานะ
+  - `search` (string) — Search by title, author, or isbn
+  - `category` (string) — Filter by category
+  - `status` (string) — Filter by status
 - **Response:** `200 OK`
 
 ```json
@@ -68,7 +68,7 @@ interface ApiResponse<T> {
 
 ### GET /books/:id
 
-ดึงหนังสือตาม ID
+Retrieve a book by ID
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
@@ -77,7 +77,7 @@ interface ApiResponse<T> {
 
 ### GET /books/stats
 
-ดึงสถิติของข้อมูลหนังสือทั้งหมด (รวมจำนวนหนังสือทั้งหมด, ว่าง, ถูกยืม และแบ่งตามหมวดหมู่)
+Retrieve book statistics (including total books, available, borrowed, and grouped by category)
 
 - **Response:** `200 OK`
 
@@ -85,9 +85,9 @@ interface ApiResponse<T> {
 
 ### POST /books/:id/borrow
 
-ยืมหนังสือ โดยระบุรหัสสมาชิกผู้ยืม
+Borrow a book by specifying the member ID
 
-- **Parameters:** `id` (UUID ของหนังสือ)
+- **Parameters:** `id` (Book UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
 - **Body:**
 
@@ -101,9 +101,9 @@ interface ApiResponse<T> {
 
 ### POST /books/:id/return
 
-คืนหนังสือที่ถูกยืม และระบบจะคำนวณค่าปรับอัตโนมัติ (และเปลี่ยนสถานะเป็น `RESERVED` ถัดไปหากมีคิว)
+Return a borrowed book. The system will auto-calculate any fines (and change status to `RESERVED` for the next member in queue, if applicable)
 
-- **Parameters:** `id` (UUID ของหนังสือ)
+- **Parameters:** `id` (Book UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
 - **Response Data Example:**
 
@@ -123,9 +123,9 @@ interface ApiResponse<T> {
 
 ### POST /books/:id/reserve
 
-จองหนังสือ (ต้องเป็นหนังสือที่มีสถานะ `BORROWED` หรือ `RESERVED` อยู่ และยังไม่ถึงคิวตัวเอง)
+Reserve a book (The book must have a `BORROWED` or `RESERVED` status, and the member must not already be in the queue)
 
-- **Parameters:** `id` (UUID ของหนังสือ)
+- **Parameters:** `id` (Book UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
 - **Body:**
 
@@ -139,7 +139,7 @@ interface ApiResponse<T> {
 
 ### POST /books
 
-สร้างหนังสือใหม่
+Create a new book
 
 - **Response:** `201 Created` | `400 Bad Request`
 - **Body:**
@@ -160,13 +160,13 @@ interface ApiResponse<T> {
 
 | Field                | Type         | Required | Validation         |
 | -------------------- | ------------ | -------- | ------------------ |
-| `isbn`               | string       | ✅       | ไม่เป็นค่าว่าง     |
-| `title`              | string       | ✅       | ไม่เป็นค่าว่าง     |
-| `author`             | string       | ✅       | ไม่เป็นค่าว่าง     |
-| `publisher`          | string       | ✅       | ไม่เป็นค่าว่าง     |
+| `isbn`               | string       | ✅       | Cannot be empty    |
+| `title`              | string       | ✅       | Cannot be empty    |
+| `author`             | string       | ✅       | Cannot be empty    |
+| `publisher`          | string       | ✅       | Cannot be empty    |
 | `publishedYear`      | number       | ✅       | 1000-2100          |
-| `category`           | BookCategory | ✅       | ค่าใน enum         |
-| `description`        | string       | ✅       | ไม่เป็นค่าว่าง     |
+| `category`           | BookCategory | ✅       | Valid enum value   |
+| `description`        | string       | ✅       | Cannot be empty    |
 | `status`             | BookStatus   | ❌       | default: AVAILABLE |
 | `isAvailableForLoan` | boolean      | ❌       | default: true      |
 
@@ -174,27 +174,27 @@ interface ApiResponse<T> {
 
 ### PUT /books/:id
 
-อัปเดตข้อมูลหนังสือทั้งหมด (Full Update)
+Update all book information (Full Update)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
-- **Body:** เหมือน POST แต่ทุก field บังคับ (รวม `status` และ `isAvailableForLoan`)
+- **Body:** Same as POST but all fields are required (including `status` and `isAvailableForLoan`)
 
 ---
 
 ### PATCH /books/:id
 
-อัปเดตข้อมูลหนังสือบางส่วน (Partial Update)
+Update partial book information (Partial Update)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
-- **Body:** ส่งเฉพาะ field ที่ต้องการอัปเดต
+- **Body:** Send only the fields to be updated
 
 ---
 
 ### DELETE /books/:id
 
-ลบหนังสือตาม ID (ใช้วิธีนำไป Soft Delete โดยปรับค่า `deletedAt` แทนการลบจากตารางจริง)
+Delete a book by ID (Uses Soft Delete by updating `deletedAt` instead of physically removing it from the table)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
@@ -205,20 +205,20 @@ interface ApiResponse<T> {
 
 ### GET /members
 
-ดึงรายการสมาชิกทั้งหมด (รองรับ ค้นหา, กรอง และ แบ่งหน้า)
+Retrieve all members (supports search, filter, and pagination)
 
 - **Query Parameters:**
   - `page` (number, default: 1)
   - `limit` (number, default: 10)
-  - `search` (string) — ค้นหาจาก firstName, lastName, หรือ memberCode
-  - `status` (string) — กรองตามสถานะ
+  - `search` (string) — Search by firstName, lastName, or memberCode
+  - `status` (string) — Filter by status
 - **Response:** `200 OK`
 
 ---
 
 ### GET /members/:id
 
-ดึงสมาชิกตาม ID
+Retrieve a member by ID
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
@@ -227,7 +227,7 @@ interface ApiResponse<T> {
 
 ### GET /members/stats
 
-ดึงสถิติข้อมูลสมาชิก (รวมจำนวนสมาชิกทั้งหมด, ใช้งานอยู่, ปิดใช้งาน, ระงับ)
+Retrieve member statistics (including total members, active, inactive, suspended)
 
 - **Response:** `200 OK`
 
@@ -235,38 +235,38 @@ interface ApiResponse<T> {
 
 ### POST /members
 
-สมัครสมาชิกใหม่
+Register a new member
 
 - **Response:** `201 Created` | `400 Bad Request`
 - **Body:**
 
 ```json
 {
-  "firstName": "สมชาย",
-  "lastName": "ใจดี",
+  "firstName": "Somchai",
+  "lastName": "Jaidee",
   "email": "somchai@example.com",
   "phone": "081-234-5678",
-  "address": "123 ถ.สุขุมวิท กรุงเทพฯ 10110",
+  "address": "123 Sukhumvit Rd, Bangkok 10110",
   "status": "ACTIVE",
   "maxBooksAllowed": 5
 }
 ```
 
-| Field             | Type         | Required | Validation            |
-| ----------------- | ------------ | -------- | --------------------- |
-| `firstName`       | string       | ✅       | ไม่เป็นค่าว่าง        |
-| `lastName`        | string       | ✅       | ไม่เป็นค่าว่าง        |
-| `email`           | string       | ✅       | ต้องเป็น format email |
-| `phone`           | string       | ✅       | ไม่เป็นค่าว่าง        |
-| `address`         | string       | ✅       | ไม่เป็นค่าว่าง        |
-| `status`          | MemberStatus | ❌       | default: ACTIVE       |
-| `maxBooksAllowed` | number       | ❌       | 1-20, default: 5      |
+| Field             | Type         | Required | Validation                 |
+| ----------------- | ------------ | -------- | -------------------------- |
+| `firstName`       | string       | ✅       | Cannot be empty            |
+| `lastName`        | string       | ✅       | Cannot be empty            |
+| `email`           | string       | ✅       | Must be valid email format |
+| `phone`           | string       | ✅       | Cannot be empty            |
+| `address`         | string       | ✅       | Cannot be empty            |
+| `status`          | MemberStatus | ❌       | default: ACTIVE            |
+| `maxBooksAllowed` | number       | ❌       | 1-20, default: 5           |
 
 ---
 
 ### PUT /members/:id
 
-อัปเดตข้อมูลสมาชิกทั้งหมด (Full Update)
+Update all member information (Full Update)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
@@ -275,7 +275,7 @@ interface ApiResponse<T> {
 
 ### PATCH /members/:id
 
-อัปเดตข้อมูลสมาชิกบางส่วน (Partial Update)
+Update partial member information (Partial Update)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `400 Bad Request` | `404 Not Found`
@@ -284,7 +284,7 @@ interface ApiResponse<T> {
 
 ### DELETE /members/:id
 
-ลบสมาชิกตาม ID (Soft Delete)
+Delete a member by ID (Soft Delete)
 
 - **Parameters:** `id` (UUID)
 - **Response:** `200 OK` | `404 Not Found`
@@ -295,13 +295,13 @@ interface ApiResponse<T> {
 
 ### GET /transactions
 
-ดึงรายการประวัติการยืม-คืนหนังสือทั้งหมด (รองรับ กรอง และ แบ่งหน้า)
+Retrieve all borrowing and returning history (supports filter and pagination)
 
 - **Query Parameters:**
   - `page` (number, default: 1)
   - `limit` (number, default: 10)
-  - `bookId` (string) — กรองตามรหัสหนังสือ
-  - `memberId` (string) — กรองตามรหัสสมาชิก
+  - `bookId` (string) — Filter by book ID
+  - `memberId` (string) — Filter by member ID
 - **Response:** `200 OK`
 
 ---
@@ -318,13 +318,13 @@ interface ApiResponse<T> {
 
 ### HTTP Status Codes
 
-| Code  | Description                                       |
-| ----- | ------------------------------------------------- |
-| `200` | OK — สำเร็จ (GET, PUT, PATCH, DELETE)             |
-| `201` | Created — สร้างข้อมูลสำเร็จ (POST)                |
-| `400` | Bad Request — ข้อมูลไม่ถูกต้อง (Validation error) |
-| `404` | Not Found — ไม่พบข้อมูล                           |
-| `500` | Internal Server Error — ข้อผิดพลาดภายในระบบ       |
+| Code  | Description                                         |
+| ----- | --------------------------------------------------- |
+| `200` | OK — Success (GET, PUT, PATCH, DELETE)              |
+| `201` | Created — Successfully created (POST)               |
+| `400` | Bad Request — Invalid data (Validation error)       |
+| `404` | Not Found — Resource not found                      |
+| `500` | Internal Server Error — System encountered an error |
 
 ---
 
@@ -332,7 +332,7 @@ interface ApiResponse<T> {
 
 ### GET /health
 
-ตรวจสอบสถานะการทำงานของระบบ
+Check system health status
 
 - **Response:** `200 OK`
 

@@ -11,7 +11,7 @@ import { PaginatedResponse } from "../../common/interfaces/paginated-response.in
 import { memberSeeds } from "./data/member-seeds";
 
 /**
- * MembersService — จัดการข้อมูลสมาชิกแบบ in-memory
+ * MembersService — Manages in-memory member data
  */
 @Injectable()
 export class MembersService {
@@ -19,7 +19,7 @@ export class MembersService {
   private memberCounter = memberSeeds.length;
 
   /**
-   * สร้างรหัสสมาชิกอัตโนมัติ (เช่น LIB-0001)
+   * Auto-generate member code (e.g., LIB-0001)
    */
   private generateMemberCode(): string {
     this.memberCounter++;
@@ -27,7 +27,7 @@ export class MembersService {
   }
 
   /**
-   * ดึงรายการสมาชิกทั้งหมด พร้อม search, filter, pagination
+   * Retrieve all members with search, filter, pagination
    */
   findAll(
     paginationDto: PaginationDto,
@@ -73,8 +73,8 @@ export class MembersService {
   }
 
   /**
-   * ดึงสมาชิกตาม ID
-   * @throws NotFoundException ถ้าไม่พบสมาชิก
+   * Retrieve member by ID
+   * @throws NotFoundException if Member not found
    */
   findOne(id: string): Member {
     const member = this.members.find(
@@ -87,7 +87,7 @@ export class MembersService {
   }
 
   /**
-   * สมัครสมาชิกใหม่
+   * Register a new member
    */
   create(createMemberDto: CreateMemberDto): Member {
     const now = new Date().toISOString();
@@ -111,8 +111,8 @@ export class MembersService {
   }
 
   /**
-   * อัปเดตข้อมูลสมาชิกทั้งหมด (PUT)
-   * @throws NotFoundException ถ้าไม่พบสมาชิก
+   * Update all member info (PUT)
+   * @throws NotFoundException if Member not found
    */
   update(id: string, updateMemberDto: UpdateMemberDto): Member {
     const memberIndex = this.members.findIndex((m) => m.id === id);
@@ -142,8 +142,8 @@ export class MembersService {
   }
 
   /**
-   * อัปเดตข้อมูลสมาชิกบางส่วน (PATCH)
-   * @throws NotFoundException ถ้าไม่พบสมาชิก
+   * Update partial member info (PATCH)
+   * @throws NotFoundException if Member not found
    */
   patch(id: string, patchMemberDto: PatchMemberDto): Member {
     const memberIndex = this.members.findIndex((m) => m.id === id);
@@ -183,8 +183,8 @@ export class MembersService {
   }
 
   /**
-   * ลบสมาชิกตาม ID
-   * @throws NotFoundException ถ้าไม่พบสมาชิก
+   * Delete member by ID
+   * @throws NotFoundException if Member not found
    */
   remove(id: string): Member {
     const member = this.findOne(id);
@@ -198,7 +198,7 @@ export class MembersService {
   }
 
   /**
-   * เพิ่ม bookId ในรายการหนังสือที่ยืม (เรียกจาก BooksService)
+   * Add bookId to borrowed list (called by BooksService)
    */
   addBorrowedBook(memberId: string, bookId: string): void {
     const memberIndex = this.members.findIndex((m) => m.id === memberId);
@@ -213,7 +213,7 @@ export class MembersService {
   }
 
   /**
-   * ลบ bookId ออกจากรายการหนังสือที่ยืม (เรียกจาก BooksService)
+   * Remove bookId from borrowed list (called by BooksService)
    */
   removeBorrowedBook(memberId: string, bookId: string): void {
     const memberIndex = this.members.findIndex((m) => m.id === memberId);
@@ -230,7 +230,7 @@ export class MembersService {
   }
 
   /**
-   * ดึงสถิติสมาชิก
+   * Retrieve member statistics
    */
   getStats() {
     const activeMembersList = this.members.filter((m) => !m.deletedAt);

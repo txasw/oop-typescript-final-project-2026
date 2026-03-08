@@ -1,16 +1,16 @@
 /**
- * สถานะของหนังสือในระบบห้องสมุด
+ * Library Book Status
  */
 export enum BookStatus {
-  /** หนังสือพร้อมให้ยืม */
+  /** Book available for loan */
   AVAILABLE = "AVAILABLE",
 
-  /** หนังสือถูกยืมอยู่ */
+  /** Book is currently borrowed */
   BORROWED = "BORROWED",
 
-  /** หนังสือถูกจองไว้ */
+  /** Book is reserved */
   RESERVED = "RESERVED",
 
-  /** หนังสืออยู่ระหว่างการซ่อมบำรุง */
+  /** Book is under maintenance */
   MAINTENANCE = "MAINTENANCE",
 }

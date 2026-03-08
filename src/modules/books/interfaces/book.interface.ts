@@ -2,58 +2,58 @@ import { BookStatus } from "../../../common/enums/book-status.enum";
 import { BookCategory } from "../../../common/enums/book-category.enum";
 
 /**
- * Book Interface — โครงสร้างข้อมูลหนังสือในระบบห้องสมุด
- * มี Attribute ≥ 10 ตัว ตามข้อกำหนด
+ * Book Interface — Book data structure in the library system
+ * Has >= 10 attributes according to requirements
  */
 export interface Book {
-  /** UUID ของหนังสือ */
+  /** Book UUID */
   id: string;
 
-  /** รหัส ISBN */
+  /** ISBN Code */
   isbn: string;
 
-  /** ชื่อหนังสือ */
+  /** Book Title */
   title: string;
 
-  /** ผู้แต่ง */
+  /** Author */
   author: string;
 
-  /** สำนักพิมพ์ */
+  /** Publisher */
   publisher: string;
 
-  /** ปีที่พิมพ์ */
+  /** Published Year */
   publishedYear: number;
 
-  /** หมวดหมู่ (enum) */
+  /** Category (enum) */
   category: BookCategory;
 
-  /** รายละเอียด / เรื่องย่อ */
+  /** Description / Synopsis */
   description: string;
 
-  /** สถานะของหนังสือ (enum) */
+  /** Book Status (enum) */
   status: BookStatus;
 
-  /** อนุญาตให้ยืมได้หรือไม่ */
+  /** Available for loan */
   isAvailableForLoan: boolean;
 
-  /** ID ของสมาชิกที่ยืมอยู่ (null ถ้าไม่มีคนยืม) */
+  /** ID of the borrowing member (null if none) */
   currentBorrowerId: string | null;
 
-  /** คิวจองหนังสือ (Member IDs ที่จองหนังสือเล่มนี้ไว้) */
+  /** Reservation queue (Member IDs reserving this book) */
   reservedBy: string[];
 
-  /** วันที่ยืม (null ถ้าไม่ได้ถูกยืม) */
+  /** Borrowed date (null if not borrowed) */
   borrowedAt: string | null;
 
-  /** กำหนดคืน (null ถ้าไม่ได้ถูกยืม) */
+  /** Due date (null if not borrowed) */
   dueDate: string | null;
 
-  /** วันที่ลบ (null ถ้ายังไม่ถูกลบ) */
+  /** Deleted date (null if not deleted) */
   deletedAt: string | null;
 
-  /** วันที่เพิ่มเข้าระบบ */
+  /** Created date */
   createdAt: string;
 
-  /** วันที่อัปเดตล่าสุด */
+  /** Last updated date */
   updatedAt: string;
 }

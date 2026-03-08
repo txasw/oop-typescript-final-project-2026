@@ -4,15 +4,15 @@ import { BookStatus } from "../../../common/enums/book-status.enum";
 import { BookCategory } from "../../../common/enums/book-category.enum";
 
 /**
- * DTO สำหรับ filter หนังสือ
+ * DTO for filtering books
  */
 export class FilterBookDto {
-  @ApiPropertyOptional({ description: "กรองตามหมวดหมู่", enum: BookCategory })
+  @ApiPropertyOptional({ description: "Filter by Category", enum: BookCategory })
   @IsOptional()
   @IsEnum(BookCategory)
   category?: BookCategory;
 
-  @ApiPropertyOptional({ description: "กรองตามสถานะ", enum: BookStatus })
+  @ApiPropertyOptional({ description: "Filter by status", enum: BookStatus })
   @IsOptional()
   @IsEnum(BookStatus)
   status?: BookStatus;

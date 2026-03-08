@@ -1,6 +1,6 @@
 /**
  * Standard API Response format
- * ใช้เป็น Response format เดียวกันทั้งระบบ
+ * Used as a uniform Response format across the system
  */
 export interface ApiResponse<T> {
   success: boolean;

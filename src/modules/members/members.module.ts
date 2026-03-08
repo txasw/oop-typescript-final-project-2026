@@ -4,7 +4,7 @@ import { MembersService } from "./members.service";
 import { BooksModule } from "../books/books.module";
 
 /**
- * MembersModule — จัดการ dependency injection สำหรับ Member feature
+ * MembersModule — Manages dependency injection for Member feature
  */
 @Module({
   imports: [forwardRef(() => BooksModule)],

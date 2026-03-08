@@ -1,5 +1,5 @@
 /**
- * Response แบบ Paginated — ใช้สำหรับ GET list endpoints
+ * Paginated Response — Used for GET list endpoints
  */
 export interface PaginatedResponse<T> {
   items: T[];
@@ -7,18 +7,18 @@ export interface PaginatedResponse<T> {
 }
 
 /**
- * ข้อมูล metadata ของ pagination
+ * Pagination metadata
  */
 export interface PaginationMeta {
-  /** หน้าปัจจุบัน */
+  /** Current page */
   currentPage: number;
 
-  /** จำนวนรายการต่อหน้า */
+  /** Number of items per page */
   itemsPerPage: number;
 
-  /** จำนวนรายการทั้งหมด */
+  /** Total number of items */
   totalItems: number;
 
-  /** จำนวนหน้าทั้งหมด */
+  /** Total number of pages */
   totalPages: number;
 }

@@ -1,6 +1,6 @@
 /**
- * สร้าง UUID v4 แบบง่าย (ไม่ต้องพึ่ง external library)
- * ใช้สำหรับ generate ID ให้ Book และ Member
+ * Generate simple UUID v4 (without external library)
+ * Used to generate ID for Book and Member
  */
 export function generateId(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {

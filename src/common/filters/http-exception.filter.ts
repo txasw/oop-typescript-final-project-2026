@@ -10,7 +10,7 @@ import { ApiResponse } from "../interfaces/api-response.interface";
 
 /**
  * Global HTTP Exception Filter
- * จัดการ error response ให้เป็น format เดียวกันทั้งระบบ
+ * Organizes error responses into a uniform format across the system
  */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {

@@ -13,34 +13,34 @@ import { BookStatus } from "../../../common/enums/book-status.enum";
 import { BookCategory } from "../../../common/enums/book-category.enum";
 
 /**
- * DTO สำหรับสร้างหนังสือใหม่ (POST /books)
+ * DTO for creating a new book (POST /books)
  */
 export class CreateBookDto {
-  @ApiProperty({ description: "รหัส ISBN", example: "978-616-123-456-7" })
+  @ApiProperty({ description: "ISBN Code", example: "978-616-123-456-7" })
   @IsString()
   @IsNotEmpty()
   isbn!: string;
 
   @ApiProperty({
-    description: "ชื่อหนังสือ",
+    description: "Book Title",
     example: "TypeScript Design Patterns",
   })
   @IsString()
   @IsNotEmpty()
   title!: string;
 
-  @ApiProperty({ description: "ผู้แต่ง", example: "John Doe" })
+  @ApiProperty({ description: "Author", example: "John Doe" })
   @IsString()
   @IsNotEmpty()
   author!: string;
 
-  @ApiProperty({ description: "สำนักพิมพ์", example: "Tech Publishing" })
+  @ApiProperty({ description: "Publisher", example: "Tech Publishing" })
   @IsString()
   @IsNotEmpty()
   publisher!: string;
 
   @ApiProperty({
-    description: "ปีที่พิมพ์",
+    description: "Published Year",
     example: 2024,
     minimum: 1000,
     maximum: 2100,
@@ -51,7 +51,7 @@ export class CreateBookDto {
   publishedYear!: number;
 
   @ApiProperty({
-    description: "หมวดหมู่",
+    description: "Category",
     enum: BookCategory,
     example: BookCategory.TECHNOLOGY,
   })
@@ -59,7 +59,7 @@ export class CreateBookDto {
   category!: BookCategory;
 
   @ApiProperty({
-    description: "รายละเอียด / เรื่องย่อ",
+    description: "Description / Synopsis",
     example: "A comprehensive guide to design patterns in TypeScript",
   })
   @IsString()
@@ -67,7 +67,7 @@ export class CreateBookDto {
   description!: string;
 
   @ApiProperty({
-    description: "สถานะของหนังสือ",
+    description: "Book status",
     enum: BookStatus,
     example: BookStatus.AVAILABLE,
     required: false,
@@ -78,7 +78,7 @@ export class CreateBookDto {
   status?: BookStatus;
 
   @ApiProperty({
-    description: "อนุญาตให้ยืมได้หรือไม่",
+    description: "Available for loan",
     example: true,
     required: false,
     default: true,

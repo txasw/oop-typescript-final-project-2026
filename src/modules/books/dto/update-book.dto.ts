@@ -12,35 +12,35 @@ import { BookStatus } from "../../../common/enums/book-status.enum";
 import { BookCategory } from "../../../common/enums/book-category.enum";
 
 /**
- * DTO สำหรับอัปเดตข้อมูลหนังสือทั้งหมด (PUT /books/:id)
- * ทุก field บังคับกรอก
+ * DTO for full book update (PUT /books/:id)
+ * All fields are required
  */
 export class UpdateBookDto {
-  @ApiProperty({ description: "รหัส ISBN", example: "978-616-123-456-7" })
+  @ApiProperty({ description: "ISBN Code", example: "978-616-123-456-7" })
   @IsString()
   @IsNotEmpty()
   isbn!: string;
 
   @ApiProperty({
-    description: "ชื่อหนังสือ",
+    description: "Book Title",
     example: "TypeScript Design Patterns",
   })
   @IsString()
   @IsNotEmpty()
   title!: string;
 
-  @ApiProperty({ description: "ผู้แต่ง", example: "John Doe" })
+  @ApiProperty({ description: "Author", example: "John Doe" })
   @IsString()
   @IsNotEmpty()
   author!: string;
 
-  @ApiProperty({ description: "สำนักพิมพ์", example: "Tech Publishing" })
+  @ApiProperty({ description: "Publisher", example: "Tech Publishing" })
   @IsString()
   @IsNotEmpty()
   publisher!: string;
 
   @ApiProperty({
-    description: "ปีที่พิมพ์",
+    description: "Published Year",
     example: 2024,
     minimum: 1000,
     maximum: 2100,
@@ -51,7 +51,7 @@ export class UpdateBookDto {
   publishedYear!: number;
 
   @ApiProperty({
-    description: "หมวดหมู่",
+    description: "Category",
     enum: BookCategory,
     example: BookCategory.TECHNOLOGY,
   })
@@ -59,7 +59,7 @@ export class UpdateBookDto {
   category!: BookCategory;
 
   @ApiProperty({
-    description: "รายละเอียด / เรื่องย่อ",
+    description: "Description / Synopsis",
     example: "A comprehensive guide to design patterns in TypeScript",
   })
   @IsString()
@@ -67,14 +67,14 @@ export class UpdateBookDto {
   description!: string;
 
   @ApiProperty({
-    description: "สถานะของหนังสือ",
+    description: "Book status",
     enum: BookStatus,
     example: BookStatus.AVAILABLE,
   })
   @IsEnum(BookStatus)
   status!: BookStatus;
 
-  @ApiProperty({ description: "อนุญาตให้ยืมได้หรือไม่", example: true })
+  @ApiProperty({ description: "Available for loan", example: true })
   @IsBoolean()
   isAvailableForLoan!: boolean;
 }

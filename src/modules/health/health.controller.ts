@@ -6,8 +6,8 @@ import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 export class HealthController {
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "ตรวจสอบสถานะของ API Server" })
-  @ApiResponse({ status: 200, description: "API ใช้งานได้ปกติ" })
+  @ApiOperation({ summary: "Check API Server status" })
+  @ApiResponse({ status: 200, description: "API is running normally" })
   check() {
     return {
       status: "ok",

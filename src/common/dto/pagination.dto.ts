@@ -3,12 +3,12 @@ import { IsOptional, IsInt, Min, Max, IsString } from "class-validator";
 import { Type } from "class-transformer";
 
 /**
- * DTO สำหรับ Pagination query parameters
- * ใช้ร่วมกับ GET endpoints ทั้งหมด
+ * DTO for Pagination query parameters
+ * Used with all GET endpoints
  */
 export class PaginationDto {
   @ApiPropertyOptional({
-    description: "หมายเลขหน้า",
+    description: "Page number",
     example: 1,
     default: 1,
     minimum: 1,
@@ -20,7 +20,7 @@ export class PaginationDto {
   page?: number = 1;
 
   @ApiPropertyOptional({
-    description: "จำนวนรายการต่อหน้า",
+    description: "Number of items per page",
     example: 10,
     default: 10,
     minimum: 1,
@@ -34,7 +34,7 @@ export class PaginationDto {
   limit?: number = 10;
 
   @ApiPropertyOptional({
-    description: "คำค้นหา (ค้นจากทุก field ที่เป็น string)",
+    description: "Search keyword (searches all string fields)",
     example: "TypeScript",
   })
   @IsOptional()

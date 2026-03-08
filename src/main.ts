@@ -11,7 +11,7 @@ async function bootstrap(): Promise<void> {
   // Enable CORS
   app.enableCors();
 
-  // Global exception filter — ทำให้ error response เป็น format เดียวกันทั้งระบบ
+  // Global exception filter — ensures uniform error response format across the system
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // Global request logging interceptor
@@ -30,13 +30,13 @@ async function bootstrap(): Promise<void> {
   const config = new DocumentBuilder()
     .setTitle("Library Management System API")
     .setDescription(
-      "REST API สำหรับระบบจัดการห้องสมุด — จัดการหนังสือและสมาชิก",
+      "REST API for Library Management System — Manage books and members",
     )
     .setVersion("1.0")
-    .addTag("books", "จัดการข้อมูลหนังสือ")
-    .addTag("members", "จัดการข้อมูลสมาชิก")
-    .addTag("transactions", "ประวัติการยืม-คืน")
-    .addTag("health", "ตรวจสอบสถานะระบบ")
+    .addTag("books", "Manage book information")
+    .addTag("members", "Manage member information")
+    .addTag("transactions", "Borrow-Return history")
+    .addTag("health", "Check system status")
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document, {
